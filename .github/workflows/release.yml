@@ -55,7 +55,7 @@ jobs:
         run: dotnet build Sonoran.Net.sln --configuration Release --no-restore
 
       - name: Pack
-        run: dotnet pack src/Sonoran.Net/Sonoran.Net.csproj --configuration Release --no-build --output artifacts /p:Version=${{ steps.version.outputs.package_version }}
+        run: dotnet pack src/Sonoran.Net/Sonoran.Net.csproj --configuration Release --output artifacts /p:Version=${{ steps.version.outputs.package_version }}
 
       - name: NuGet login
         id: login
