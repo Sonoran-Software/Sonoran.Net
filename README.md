@@ -2,7 +2,7 @@
 
 `Sonoran.Net` is the C# package for Sonoran CAD, CMS, and Radio integrations.
 
-This repository is currently focused on mirroring the Sonoran CAD v2 API surface exposed by the existing Sonoran Lua and JavaScript SDKs, with matching naming, response normalization, and release automation.
+This repository is currently focused on a typed Sonoran CAD v2 client that mirrors the Lua and JavaScript SDK helper names while using C# request/query models instead of raw JSON strings.
 
 Install it with:
 
@@ -16,27 +16,42 @@ The package is in active development.
 
 Current repository contents include:
 
-- package metadata for NuGet
-- shared response and configuration models
+- a typed CAD v2 client
+- strongly typed request/query models for CAD v2 helpers
+- normalized `SonoranResponse` handling
+- automatic retry handling for CAD v2 `429` responses
 - automated version bump and NuGet release workflow
 
-The full CAD v2 client surface is still being filled in.
-
-## Installation
-
-```sh
-dotnet add package Sonoran.Net
-```
-
-## What The Package Exposes Today
-
-### `SonoranClientOptions`
-
-Use `SonoranClientOptions` to define the settings a Sonoran CAD client will use.
+## Example Usage
 
 ```csharp
 using Sonoran;
 
+using var sonoran = new SonoranClient(new SonoranClientOptions
+{
+    apiKey = "your-cad-api-key",
+    communityId = "your-community-id",
+    defaultServerId = 1
+});
+
+var version = await sonoran.getVersionV2();
+
+var emergencyCall = await sonoran.createEmergencyCallV2(new CreateEmergencyCallV2Request
+{
+    ServerId = 1,
+    IsEmergency = true,
+    Caller = "John Doe",
+    Location = "101 Alta Street",
+    Description = "Structure fire with visible smoke.",
+    DeleteAfterMinutes = 30
+});
+```
+
+## Core Types
+
+### `SonoranClientOptions`
+
+```csharp
 var options = new SonoranClientOptions
 {
     apiKey = "your-cad-api-key",
@@ -62,25 +77,31 @@ Supported properties:
 
 ### `SonoranResponse`
 
-The SDK is designed around a normalized response shape:
+Every public CAD v2 helper returns a normalized response:
 
 ```csharp
-using Sonoran;
-using System.Text.Json.Nodes;
-
-var response = new SonoranResponse
+if (emergencyCall.success)
 {
-    success = true,
-    data = JsonNode.Parse("""{"ok":true}""")
-};
+    Console.WriteLine(emergencyCall.data);
+}
+else
+{
+    Console.WriteLine(emergencyCall.reason);
+}
 ```
 
-Failure responses use `reason`:
+The client automatically retries CAD v2 `429 Too Many Requests` responses up to 2 times and respects `Retry-After` when it is provided.
 
-```csharp
-var failure = new SonoranResponse
-{
-    success = false,
-    reason = "Request failed."
-};
-```
+## CAD v2 Surface
+
+The client mirrors the current CAD v2 helper names, including methods such as:
+
+- `getVersionV2()`
+- `getInfoV2()`
+- `getCharactersV2(...)`
+- `createEmergencyCallV2(...)`
+- `createDispatchCallV2(...)`
+- `setUnitStatusV2(...)`
+- `getBlipsV2(...)`
+
+That keeps usage consistent across Lua, JavaScript, and C# while still using typed request models where C# benefits from them.

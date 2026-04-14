@@ -1,0 +1,292 @@
+using System.Net;
+using System.Text;
+using System.Text.Json.Nodes;
+using Sonoran;
+
+namespace Sonoran.Net.Tests;
+
+public sealed class SonoranClientRequestMappingTests
+{
+    [Fact]
+    public async Task GetLoginPageV2_UsesPublicQueryWithoutAuth()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        var response = await client.getLoginPageV2(new GetLoginPageV2Query
+        {
+            Url = "https://example.com/callback",
+            CommunityId = "abc 123"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal(HttpMethod.Get, request.Method);
+        Assert.Equal("https://api.sonorancad.com/v2/general/login-page?communityId=abc%20123&url=https%3A%2F%2Fexample.com%2Fcallback", GetEscapedUrl(request));
+        Assert.Null(request.Headers.Authorization);
+        Assert.True(response.success);
+    }
+
+    [Fact]
+    public async Task HeartbeatV2_UsesServerPathAndBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.heartbeatV2(8, 24);
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/general/servers/8/heartbeat", GetEscapedUrl(request));
+        Assert.Equal("""{"playerCount":24}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task GetCallsV2_UsesTypedQuerySerialization()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.getCallsV2(new GetCallsV2Query
+        {
+            ServerId = 10,
+            ClosedLimit = 5,
+            ClosedOffset = 2,
+            Type = "dispatch"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/10/calls?closedLimit=5&closedOffset=2&type=dispatch", GetEscapedUrl(request));
+    }
+
+    [Fact]
+    public async Task CreateEmergencyCallV2_UsesTypedRequestBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.createEmergencyCallV2(new CreateEmergencyCallV2Request
+        {
+            ServerId = 4,
+            IsEmergency = true,
+            Caller = "caller",
+            Location = "loc",
+            Description = "desc"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/4/calls/911", GetEscapedUrl(request));
+        Assert.Equal("""{"isEmergency":true,"caller":"caller","location":"loc","description":"desc"}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task CreateDispatchCallV2_UsesTypedRequestBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.createDispatchCallV2(new CreateDispatchCallV2Request
+        {
+            ServerId = 11,
+            Origin = 1,
+            Status = 2,
+            Priority = 1,
+            Block = "123",
+            Address = "Main",
+            Postal = "100",
+            Title = "Call",
+            Code = "TS",
+            Description = "desc",
+            Notes = []
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/11/dispatch-calls", GetEscapedUrl(request));
+        Assert.Equal("""{"origin":1,"status":2,"priority":1,"block":"123","address":"Main","postal":"100","title":"Call","code":"TS","description":"desc","notes":[]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task SetUnitStatusV2_StripsServerIdFromBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.setUnitStatusV2(new SetUnitStatusV2Request
+        {
+            ServerId = 5,
+            ApiId = "1",
+            Status = 2
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/5/units/status", GetEscapedUrl(request));
+        Assert.Equal("""{"apiId":"1","status":2}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task GetAccountUnitsV2_UsesPathAndQuery()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.getAccountUnitsV2(new GetAccountUnitsV2Query
+        {
+            ServerId = 6,
+            AccountUuid = "acc/1",
+            OnlyOnline = true,
+            OnlyUnits = true,
+            Limit = 4,
+            Offset = 1
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/6/accounts/acc%2F1/units?limit=4&offset=1&onlyOnline=true&onlyUnits=true", GetEscapedUrl(request));
+    }
+
+    [Fact]
+    public async Task AddIdentifiersToGroupV2_UsesPathValueAndTypedBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.addIdentifiersToGroupV2(new AddIdentifiersToGroupV2Request
+        {
+            ServerId = 4,
+            GroupName = "A Shift",
+            ApiIds = ["1"]
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/4/identifier-groups/A%20Shift", GetEscapedUrl(request));
+        Assert.Equal("""{"apiIds":["1"]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task RetriesRateLimitedRequests()
+    {
+        var delays = new List<TimeSpan>();
+        var handler = new RecordingHandler();
+        handler.QueueJson((HttpStatusCode)429, """{"error":"bad request"}""", retryAfter: "1");
+        handler.QueueJson((HttpStatusCode)429, """{"error":"bad request"}""");
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler, delays);
+        var response = await client.getVersionV2();
+
+        Assert.True(response.success);
+        Assert.Equal(3, handler.Requests.Count);
+        Assert.Equal(2, delays.Count);
+        Assert.True(delays[0] >= TimeSpan.FromSeconds(1));
+        Assert.True(delays[1] >= TimeSpan.FromSeconds(2));
+    }
+
+    [Fact]
+    public async Task HandlesNoContentAndPlainTextErrors()
+    {
+        var handler = new RecordingHandler();
+        handler.Queue(HttpStatusCode.NoContent, string.Empty, null);
+        handler.Queue(HttpStatusCode.InternalServerError, "plain error", "text/plain");
+
+        using var client = CreateClient(handler);
+        var success = await client.getVersionV2();
+        var failure = await client.getInfoV2();
+
+        Assert.True(success.success);
+        Assert.Null(success.data);
+        Assert.False(failure.success);
+        Assert.Equal("plain error", Assert.IsType<string>(failure.reason));
+    }
+
+    private static SonoranClient CreateClient(RecordingHandler handler, List<TimeSpan>? delays = null)
+    {
+        var httpClient = new HttpClient(handler);
+        return new SonoranClient(new SonoranClientOptions
+        {
+            apiKey = "test-key",
+            communityId = "community-123",
+            apiUrl = "https://api.sonorancad.com/",
+            defaultServerId = 3,
+            timeout = TimeSpan.FromMilliseconds(12345),
+            headers = new Dictionary<string, string>
+            {
+                ["X-Test"] = "yes"
+            }
+        }, httpClient, (delay, _) =>
+        {
+            delays?.Add(delay);
+            return Task.CompletedTask;
+        });
+    }
+
+    private sealed class RecordingHandler : HttpMessageHandler
+    {
+        private readonly Queue<HttpResponseMessage> _responses = new();
+
+        public List<HttpRequestMessage> Requests { get; } = [];
+
+        public void QueueJson(HttpStatusCode statusCode, string body, string? retryAfter = null)
+        {
+            var response = new HttpResponseMessage(statusCode)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+
+            if (!string.IsNullOrWhiteSpace(retryAfter))
+            {
+                response.Headers.TryAddWithoutValidation("Retry-After", retryAfter);
+            }
+
+            _responses.Enqueue(response);
+        }
+
+        public void Queue(HttpStatusCode statusCode, string body, string? contentType)
+        {
+            var response = new HttpResponseMessage(statusCode);
+            if (contentType is not null)
+            {
+                response.Content = new StringContent(body, Encoding.UTF8, contentType);
+            }
+            else
+            {
+                response.Content = new StringContent(body);
+                response.Content.Headers.ContentType = null;
+            }
+
+            _responses.Enqueue(response);
+        }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var clone = new HttpRequestMessage(request.Method, request.RequestUri);
+            foreach (var header in request.Headers)
+            {
+                clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+
+            if (request.Content is not null)
+            {
+                var body = await request.Content.ReadAsStringAsync(cancellationToken);
+                clone.Content = request.Content.Headers.ContentType?.MediaType is { } mediaType
+                    ? new StringContent(body, Encoding.UTF8, mediaType)
+                    : new StringContent(body, Encoding.UTF8);
+                foreach (var header in request.Content.Headers)
+                {
+                    clone.Content.Headers.Remove(header.Key);
+                    clone.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+            }
+
+            Requests.Add(clone);
+            return _responses.Dequeue();
+        }
+    }
+
+    private static string GetEscapedUrl(HttpRequestMessage request) =>
+        request.RequestUri!.GetComponents(UriComponents.HttpRequestUrl, UriFormat.UriEscaped);
+}

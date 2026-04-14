@@ -1,0 +1,260 @@
+using System.Text.Json.Serialization;
+
+namespace Sonoran;
+
+public sealed record GetUnitsV2Query
+{
+    public int? ServerId { get; init; }
+    public bool? IncludeOffline { get; init; }
+    public bool? OnlyUnits { get; init; }
+    public int? Limit { get; init; }
+    public int? Offset { get; init; }
+}
+
+public sealed record GetCallsV2Query
+{
+    public int? ServerId { get; init; }
+    public int? ClosedLimit { get; init; }
+    public int? ClosedOffset { get; init; }
+    public string? Type { get; init; }
+}
+
+public sealed record UnitLocationUpdateV2
+{
+    public string? ApiId { get; init; }
+    public string? AccountUuid { get; init; }
+    public string? Location { get; init; }
+    public double? X { get; init; }
+    public double? Y { get; init; }
+    public double? Z { get; init; }
+    public float? Heading { get; init; }
+}
+
+public sealed record UpdateUnitLocationsV2Request
+{
+    public int? ServerId { get; init; }
+    public IReadOnlyList<UnitLocationUpdateV2> Updates { get; init; } = [];
+}
+
+public sealed record SetUnitPanicV2Request
+{
+    public int? ServerId { get; init; }
+    public string? AccountUuid { get; init; }
+    public string? ApiId { get; init; }
+    public IReadOnlyList<string>? ApiIds { get; init; }
+    public IReadOnlyList<int>? IdentIds { get; init; }
+    public bool IsPanic { get; init; }
+}
+
+public sealed record SetUnitStatusV2Request
+{
+    public int? ServerId { get; init; }
+    public string? AccountUuid { get; init; }
+    public string? ApiId { get; init; }
+    public IReadOnlyList<string>? ApiIds { get; init; }
+    public IReadOnlyList<int>? IdentIds { get; init; }
+    public int Status { get; init; }
+}
+
+public sealed record KickUnitV2Request
+{
+    public int? ServerId { get; init; }
+    public string ApiId { get; init; } = string.Empty;
+    public string Reason { get; init; } = string.Empty;
+}
+
+public sealed record GetAccountUnitsV2Query
+{
+    public int? ServerId { get; init; }
+    public string AccountUuid { get; init; } = string.Empty;
+    public bool? OnlyOnline { get; init; }
+    public bool? OnlyUnits { get; init; }
+    public int? Limit { get; init; }
+    public int? Offset { get; init; }
+}
+
+public sealed record IdentifierV2Request
+{
+    public string? UnitNum { get; init; }
+    public string? Department { get; init; }
+    public string? Subdivision { get; init; }
+    public string? Callsign { get; init; }
+    public string? Title { get; init; }
+    public string? Type { get; init; }
+    public bool? IsPrimary { get; init; }
+    public Dictionary<string, object?>? Data { get; init; }
+}
+
+public sealed record AddIdentifiersToGroupV2Request
+{
+    public int? ServerId { get; init; }
+    public string GroupName { get; init; } = string.Empty;
+    public string? AccountUuid { get; init; }
+    public string? ApiId { get; init; }
+    public IReadOnlyList<string>? ApiIds { get; init; }
+    public IReadOnlyList<int>? IdentIds { get; init; }
+}
+
+public sealed record CreateEmergencyCallV2Request
+{
+    public int? ServerId { get; init; }
+    public bool IsEmergency { get; init; }
+    public string Caller { get; init; } = string.Empty;
+    public string Location { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public Dictionary<string, string>? MetaData { get; init; }
+    public int? DeleteAfterMinutes { get; init; }
+}
+
+public sealed record DispatchCallNoteV2
+{
+    [JsonPropertyName("time")]
+    public string? Time { get; init; }
+
+    [JsonPropertyName("label")]
+    public string? Label { get; init; }
+
+    [JsonPropertyName("type")]
+    public string? Type { get; init; }
+
+    [JsonPropertyName("content")]
+    public string? Content { get; init; }
+}
+
+public sealed record CreateDispatchCallV2Request
+{
+    public int? ServerId { get; init; }
+    public int Origin { get; init; }
+    public int Status { get; init; }
+    public int Priority { get; init; }
+    public string Block { get; init; } = string.Empty;
+    public string Address { get; init; } = string.Empty;
+    public string Postal { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public string Code { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public IReadOnlyList<DispatchCallNoteV2> Notes { get; init; } = [];
+    public IReadOnlyList<string>? CommunityUserIds { get; init; }
+    public IReadOnlyList<string>? Accounts { get; init; }
+    public IReadOnlyList<string>? ApiIds { get; init; }
+    public Dictionary<string, string>? MetaData { get; init; }
+    public int? DeleteAfterMinutes { get; init; }
+}
+
+public sealed record UpdateDispatchCallV2Request
+{
+    public int? ServerId { get; init; }
+    public int? Origin { get; init; }
+    public int? Status { get; init; }
+    public int? Priority { get; init; }
+    public string? Block { get; init; }
+    public string? Address { get; init; }
+    public string? Postal { get; init; }
+    public string? Title { get; init; }
+    public string? Code { get; init; }
+    public string? Description { get; init; }
+    public int? Primary { get; init; }
+    public bool? TrackPrimary { get; init; }
+    public Dictionary<string, string>? MetaData { get; init; }
+}
+
+public sealed record DispatchAttachmentV2Request
+{
+    public int? ServerId { get; init; }
+    public string? AccountUuid { get; init; }
+    public string? ApiId { get; init; }
+    public IReadOnlyList<string>? ApiIds { get; init; }
+    public IReadOnlyList<string>? Accounts { get; init; }
+    public IReadOnlyList<int>? IdentIds { get; init; }
+}
+
+public sealed record AddDispatchNoteV2Request
+{
+    public int? ServerId { get; init; }
+    public string Note { get; init; } = string.Empty;
+    public string? NoteType { get; init; }
+    public string? Label { get; init; }
+}
+
+public sealed record UpdateStreetSignsV2Request
+{
+    public int? ServerId { get; init; }
+    public IReadOnlyList<int> Ids { get; init; } = [];
+    public string? Text1 { get; init; }
+    public string? Text2 { get; init; }
+    public string? Text3 { get; init; }
+}
+
+public sealed record AvailableCalloutV2
+{
+    public string? Label { get; init; }
+    public string? Code { get; init; }
+    public int? Priority { get; init; }
+}
+
+public sealed record PagerNatureWordV2
+{
+    public string Label { get; init; } = string.Empty;
+    public int Weight { get; init; }
+}
+
+public sealed record PagerNodeV2
+{
+    public string Label { get; init; } = string.Empty;
+    public string? Department { get; init; }
+    public string? Subdivision { get; init; }
+    public IReadOnlyList<string>? Tones { get; init; }
+}
+
+public sealed record SetPagerConfigV2Request
+{
+    public int? ServerId { get; init; }
+    public IReadOnlyList<PagerNatureWordV2> NatureWords { get; init; } = [];
+    public int MaxAddresses { get; init; }
+    public int MaxBodyLength { get; init; }
+    public IReadOnlyList<PagerNodeV2>? Nodes { get; init; }
+}
+
+public sealed record StationV2
+{
+    public string Label { get; init; } = string.Empty;
+    public string? Department { get; init; }
+    public string? Subdivision { get; init; }
+    public IReadOnlyList<int>? IdentIds { get; init; }
+    public Dictionary<string, object?>? Data { get; init; }
+}
+
+public sealed record StationConfigV2
+{
+    public bool? Enabled { get; init; }
+    public IReadOnlyList<StationV2>? Stations { get; init; }
+}
+
+public sealed record BlipCoordinatesV2
+{
+    public double X { get; init; }
+    public double Y { get; init; }
+    public double? Z { get; init; }
+}
+
+public sealed record CreateBlipV2Request
+{
+    public int? ServerId { get; init; }
+    public BlipCoordinatesV2 Coordinates { get; init; } = new();
+    public string SubType { get; init; } = string.Empty;
+    public string? Icon { get; init; }
+    public string? Color { get; init; }
+    public string? Tooltip { get; init; }
+    public double? Radius { get; init; }
+}
+
+public sealed record UpdateBlipV2Request
+{
+    public int? ServerId { get; init; }
+    public BlipCoordinatesV2? Coordinates { get; init; }
+    public string? SubType { get; init; }
+    public string? Icon { get; init; }
+    public string? Color { get; init; }
+    public string? Tooltip { get; init; }
+    public double? Radius { get; init; }
+}

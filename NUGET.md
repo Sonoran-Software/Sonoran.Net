@@ -8,49 +8,36 @@
 dotnet add package Sonoran.Net
 ```
 
-## Current Status
-
-This package is under active development.
-
-The repository currently includes:
-
-- NuGet package metadata
-- shared configuration and response models
-- automated GitHub Actions publishing with trusted publishing
-
 ## Example Configuration
 
 ```csharp
 using Sonoran;
 
-var options = new SonoranClientOptions
+using var sonoran = new SonoranClient(new SonoranClientOptions
 {
     apiKey = "your-cad-api-key",
     communityId = "your-community-id",
     apiUrl = "https://api.sonorancad.com",
     defaultServerId = 1,
     timeout = TimeSpan.FromSeconds(30)
-};
+});
 ```
 
-## Response Shape
+## Example Usage
 
 ```csharp
-using Sonoran;
-using System.Text.Json.Nodes;
-
-var success = new SonoranResponse
+var response = await sonoran.createEmergencyCallV2(new CreateEmergencyCallV2Request
 {
-    success = true,
-    data = JsonNode.Parse("""{"ok":true}""")
-};
-
-var failure = new SonoranResponse
-{
-    success = false,
-    reason = "Request failed."
-};
+    ServerId = 1,
+    IsEmergency = true,
+    Caller = "John Doe",
+    Location = "101 Alta Street",
+    Description = "Structure fire with visible smoke.",
+    DeleteAfterMinutes = 30
+});
 ```
+
+The client automatically retries CAD v2 `429 Too Many Requests` responses up to 2 times and respects `Retry-After` when it is provided.
 
 ## Repository
 
