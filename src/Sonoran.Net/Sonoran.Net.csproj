@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <RootNamespace>Sonoran</RootNamespace>
+    <PackageId>Sonoran.Net</PackageId>
+    <Title>Sonoran.Net</Title>
+    <Description>C# SDK for Sonoran CAD v2 endpoints.</Description>
+    <RepositoryUrl>https://github.com/Sonoran-Software/Sonoran.Net</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

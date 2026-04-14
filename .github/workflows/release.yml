@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Compute version
+        id: version
+        shell: pwsh
+        run: |
+          $project = "src/Sonoran.Net/Sonoran.Net.csproj"
+          [xml]$csproj = Get-Content $project
+          $baseVersion = $csproj.Project.PropertyGroup.VersionPrefix | Select-Object -First 1
+          if ([string]::IsNullOrWhiteSpace($baseVersion)) {
+            throw "VersionPrefix is required in $project"
+          }
+
+          git fetch --tags --force
+          $latestTag = git tag --list "v*" --sort=-version:refname | Select-Object -First 1
+
+          if ([string]::IsNullOrWhiteSpace($latestTag)) {
+            $nextVersion = $baseVersion
+          } else {
+            $currentVersion = [Version]($latestTag.TrimStart("v"))
+            $nextVersion = "{0}.{1}.{2}" -f $currentVersion.Major, $currentVersion.Minor, ($currentVersion.Build + 1)
+          }
+
+          "package_version=$nextVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "package_tag=v$nextVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Restore
+        run: dotnet restore Sonoran.Net.sln
+
+      - name: Build
+        run: dotnet build Sonoran.Net.sln --configuration Release --no-restore
+
+      - name: Pack
+        run: dotnet pack src/Sonoran.Net/Sonoran.Net.csproj --configuration Release --no-build --output artifacts /p:Version=${{ steps.version.outputs.package_version }}
+
+      - name: NuGet login
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: NuGet push
+        run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Create tag
+        run: |
+          git tag "${{ steps.version.outputs.package_tag }}"
+          git push origin "${{ steps.version.outputs.package_tag }}"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.package_tag }}
+          name: ${{ steps.version.outputs.package_tag }}
+          files: artifacts/*.nupkg
+          generate_release_notes: true
