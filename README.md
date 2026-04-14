@@ -12,7 +12,7 @@ Required one-time setup:
    - Repository Owner: `Sonoran-Software`
    - Repository: `Sonoran.Net`
    - NuGet Owner: `SonoranSoftware`
-   - Workflow File: `release.yml`
+   - Workflow File: `build.yml`
 2. In GitHub, add a repository variable named `NUGET_USER` with the nuget.org profile name that owns the package.
 
 After that, every push to `master` will:
