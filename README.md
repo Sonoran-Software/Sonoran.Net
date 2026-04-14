@@ -11,6 +11,7 @@ Required one-time setup:
 1. In nuget.org, create a trusted publishing policy for:
    - Repository Owner: `Sonoran-Software`
    - Repository: `Sonoran.Net`
+   - NuGet Owner: `SonoranSoftware`
    - Workflow File: `release.yml`
 2. In GitHub, add a repository variable named `NUGET_USER` with the nuget.org profile name that owns the package.
 

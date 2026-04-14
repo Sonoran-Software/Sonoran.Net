@@ -61,7 +61,7 @@ jobs:
         id: login
         uses: NuGet/login@v1
         with:
-          user: ${{ vars.NUGET_USER || github.repository_owner }}
+          user: ${{ vars.NUGET_USER || 'SonoranSoftware' }}
 
       - name: NuGet push
         run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
