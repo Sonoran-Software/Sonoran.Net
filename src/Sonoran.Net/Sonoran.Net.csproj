@@ -10,11 +10,12 @@
     <Title>Sonoran.Net</Title>
     <Description>C# SDK for Sonoran CAD v2 endpoints.</Description>
     <RepositoryUrl>https://github.com/Sonoran-Software/Sonoran.Net</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>NUGET.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/Sonoran-Software/Sonoran.Net</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\NUGET.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
