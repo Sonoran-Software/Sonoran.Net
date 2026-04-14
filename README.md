@@ -2,6 +2,26 @@
 
 `Sonoran.Net` is the C# package for Sonoran CAD, CMS, and Radio integrations.
 
+This repository is currently focused on mirroring the Sonoran CAD v2 API surface exposed by the existing Sonoran Lua and JavaScript SDKs, with matching naming, response normalization, and release automation.
+
+Install it with:
+
+```sh
+dotnet add package Sonoran.Net
+```
+
+## Status
+
+The package is in active development.
+
+Current repository contents include:
+
+- package metadata for NuGet
+- shared response and configuration models
+- automated version bump and NuGet release workflow
+
+The full CAD v2 client surface is still being filled in.
+
 ## Installation
 
 ```sh
