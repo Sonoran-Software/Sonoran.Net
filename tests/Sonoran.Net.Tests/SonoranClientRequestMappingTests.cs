@@ -205,6 +205,41 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task RadioGetConnectedUsersV2_UsesRadioServerPath()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.getConnectedUsersV2(9);
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonoranradio.com/v2/servers/9/connected-users", GetEscapedUrl(request));
+        Assert.Equal("Bearer radio-key", request.Headers.Authorization?.ToString());
+    }
+
+    [Fact]
+    public async Task RadioSetServerIpV2_StripsServerIdFromBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.setServerIpV2(new SetServerIpV2Request
+        {
+            ServerId = 4,
+            RoomId = 2,
+            ServerPort = 30120,
+            PushUrl = "http://127.0.0.1:30120/sonoranradio",
+            Nickname = "Patrol"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonoranradio.com/v2/servers/4/server-ip", GetEscapedUrl(request));
+        Assert.Equal("""{"roomId":2,"serverPort":30120,"pushUrl":"http://127.0.0.1:30120/sonoranradio","nickname":"Patrol"}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public void Constructor_RequiresProduct()
     {
         var exception = Assert.Throws<ArgumentException>(() => new SonoranClient(new SonoranClientOptions
@@ -226,7 +261,7 @@ public sealed class SonoranClientRequestMappingTests
             communityId = "community-123"
         }));
 
-        Assert.Equal("Only SonoranProduct.CAD is currently supported in Sonoran.Net.", exception.Message);
+        Assert.Equal("Only SonoranProduct.CAD and SonoranProduct.RADIO are currently supported in Sonoran.Net.", exception.Message);
     }
 
     private static SonoranClient CreateClient(RecordingHandler handler, List<TimeSpan>? delays = null)
@@ -249,6 +284,24 @@ public sealed class SonoranClientRequestMappingTests
             delays?.Add(delay);
             return Task.CompletedTask;
         });
+    }
+
+    private static SonoranClient CreateRadioClient(RecordingHandler handler)
+    {
+        var httpClient = new HttpClient(handler);
+        return new SonoranClient(new SonoranClientOptions
+        {
+            product = SonoranProduct.RADIO,
+            apiKey = "radio-key",
+            communityId = "radio-community",
+            apiUrl = "https://api.sonoranradio.com/",
+            defaultServerId = 3,
+            timeout = TimeSpan.FromMilliseconds(12345),
+            headers = new Dictionary<string, string>
+            {
+                ["X-Test"] = "yes"
+            }
+        }, httpClient);
     }
 
     private sealed class RecordingHandler : HttpMessageHandler

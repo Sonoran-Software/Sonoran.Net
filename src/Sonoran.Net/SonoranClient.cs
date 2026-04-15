@@ -31,9 +31,9 @@ public sealed partial class SonoranClient : IDisposable
             throw new ArgumentException("product is required when instancing.", nameof(options));
         }
 
-        if (Options.product != SonoranProduct.CAD)
+        if (Options.product != SonoranProduct.CAD && Options.product != SonoranProduct.RADIO)
         {
-            throw new NotSupportedException("Only SonoranProduct.CAD is currently supported in Sonoran.Net.");
+            throw new NotSupportedException("Only SonoranProduct.CAD and SonoranProduct.RADIO are currently supported in Sonoran.Net.");
         }
 
         _httpClient = httpClient ?? new HttpClient();
@@ -41,10 +41,12 @@ public sealed partial class SonoranClient : IDisposable
         _httpClient.Timeout = options.timeout;
         _delay = delay ?? Task.Delay;
         Cad = new SonoranCadClient(this);
+        Radio = new SonoranRadioClient(this);
     }
 
     public SonoranClientOptions Options { get; }
     public SonoranCadClient Cad { get; }
+    public SonoranRadioClient Radio { get; }
 
     public void Dispose()
     {
