@@ -34,9 +34,9 @@ using var sonoran = new SonoranClient(new SonoranClientOptions
     defaultServerId = 1
 });
 
-var version = await sonoran.getVersionV2();
+var version = await sonoran.Cad.getVersionV2();
 
-var emergencyCall = await sonoran.createEmergencyCallV2(new CreateEmergencyCallV2Request
+var emergencyCall = await sonoran.Cad.createEmergencyCallV2(new CreateEmergencyCallV2Request
 {
     ServerId = 1,
     IsEmergency = true,
@@ -93,6 +93,8 @@ else
 The client automatically retries CAD v2 `429 Too Many Requests` responses up to 2 times and respects `Retry-After` when it is provided.
 
 ## CAD v2 Surface
+
+The CAD surface is available under `sonoran.Cad.*`. Root-level helpers are still available for backward compatibility.
 
 The client mirrors the current CAD v2 helper names, including methods such as:
 

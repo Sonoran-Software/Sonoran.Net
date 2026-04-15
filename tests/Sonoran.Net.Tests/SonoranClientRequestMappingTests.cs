@@ -14,7 +14,8 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        var response = await client.getLoginPageV2(new GetLoginPageV2Query
+        Assert.NotNull(client.Cad);
+        var response = await client.Cad.getLoginPageV2(new GetLoginPageV2Query
         {
             Url = "https://example.com/callback",
             CommunityId = "abc 123"
@@ -34,7 +35,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.heartbeatV2(8, 24);
+        _ = await client.Cad.heartbeatV2(8, 24);
 
         var request = Assert.Single(handler.Requests);
         Assert.Equal("https://api.sonorancad.com/v2/general/servers/8/heartbeat", GetEscapedUrl(request));
@@ -48,7 +49,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.getCallsV2(new GetCallsV2Query
+        _ = await client.Cad.getCallsV2(new GetCallsV2Query
         {
             ServerId = 10,
             ClosedLimit = 5,
@@ -67,7 +68,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.createEmergencyCallV2(new CreateEmergencyCallV2Request
+        _ = await client.Cad.createEmergencyCallV2(new CreateEmergencyCallV2Request
         {
             ServerId = 4,
             IsEmergency = true,
@@ -88,7 +89,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.createDispatchCallV2(new CreateDispatchCallV2Request
+        _ = await client.Cad.createDispatchCallV2(new CreateDispatchCallV2Request
         {
             ServerId = 11,
             Origin = 1,
@@ -115,7 +116,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.setUnitStatusV2(new SetUnitStatusV2Request
+        _ = await client.Cad.setUnitStatusV2(new SetUnitStatusV2Request
         {
             ServerId = 5,
             ApiId = "1",
@@ -134,7 +135,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.getAccountUnitsV2(new GetAccountUnitsV2Query
+        _ = await client.Cad.getAccountUnitsV2(new GetAccountUnitsV2Query
         {
             ServerId = 6,
             AccountUuid = "acc/1",
@@ -155,7 +156,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler);
-        _ = await client.addIdentifiersToGroupV2(new AddIdentifiersToGroupV2Request
+        _ = await client.Cad.addIdentifiersToGroupV2(new AddIdentifiersToGroupV2Request
         {
             ServerId = 4,
             GroupName = "A Shift",
@@ -177,7 +178,7 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateClient(handler, delays);
-        var response = await client.getVersionV2();
+        var response = await client.Cad.getVersionV2();
 
         Assert.True(response.success);
         Assert.Equal(3, handler.Requests.Count);
@@ -194,8 +195,8 @@ public sealed class SonoranClientRequestMappingTests
         handler.Queue(HttpStatusCode.InternalServerError, "plain error", "text/plain");
 
         using var client = CreateClient(handler);
-        var success = await client.getVersionV2();
-        var failure = await client.getInfoV2();
+        var success = await client.Cad.getVersionV2();
+        var failure = await client.Cad.getInfoV2();
 
         Assert.True(success.success);
         Assert.Null(success.data);

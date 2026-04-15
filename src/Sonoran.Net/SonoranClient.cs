@@ -30,9 +30,11 @@ public sealed partial class SonoranClient : IDisposable
         _ownsHttpClient = httpClient is null;
         _httpClient.Timeout = options.timeout;
         _delay = delay ?? Task.Delay;
+        Cad = new SonoranCadClient(this);
     }
 
     public SonoranClientOptions Options { get; }
+    public SonoranCadClient Cad { get; }
 
     public void Dispose()
     {
