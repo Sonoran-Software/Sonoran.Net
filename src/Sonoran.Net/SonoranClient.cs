@@ -26,6 +26,16 @@ public sealed partial class SonoranClient : IDisposable
     public SonoranClient(SonoranClientOptions options, HttpClient? httpClient = null, Func<TimeSpan, CancellationToken, Task>? delay = null)
     {
         Options = options ?? throw new ArgumentNullException(nameof(options));
+        if (Options.product is null)
+        {
+            throw new ArgumentException("product is required when instancing.", nameof(options));
+        }
+
+        if (Options.product != SonoranProduct.CAD)
+        {
+            throw new NotSupportedException("Only SonoranProduct.CAD is currently supported in Sonoran.Net.");
+        }
+
         _httpClient = httpClient ?? new HttpClient();
         _ownsHttpClient = httpClient is null;
         _httpClient.Timeout = options.timeout;

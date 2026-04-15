@@ -204,11 +204,37 @@ public sealed class SonoranClientRequestMappingTests
         Assert.Equal("plain error", Assert.IsType<string>(failure.reason));
     }
 
+    [Fact]
+    public void Constructor_RequiresProduct()
+    {
+        var exception = Assert.Throws<ArgumentException>(() => new SonoranClient(new SonoranClientOptions
+        {
+            apiKey = "test-key",
+            communityId = "community-123"
+        }));
+
+        Assert.Contains("product is required when instancing.", exception.Message);
+    }
+
+    [Fact]
+    public void Constructor_RejectsUnsupportedProducts()
+    {
+        var exception = Assert.Throws<NotSupportedException>(() => new SonoranClient(new SonoranClientOptions
+        {
+            product = SonoranProduct.CMS,
+            apiKey = "test-key",
+            communityId = "community-123"
+        }));
+
+        Assert.Equal("Only SonoranProduct.CAD is currently supported in Sonoran.Net.", exception.Message);
+    }
+
     private static SonoranClient CreateClient(RecordingHandler handler, List<TimeSpan>? delays = null)
     {
         var httpClient = new HttpClient(handler);
         return new SonoranClient(new SonoranClientOptions
         {
+            product = SonoranProduct.CAD,
             apiKey = "test-key",
             communityId = "community-123",
             apiUrl = "https://api.sonorancad.com/",

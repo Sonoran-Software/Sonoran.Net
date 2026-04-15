@@ -29,6 +29,7 @@ using Sonoran;
 
 using var sonoran = new SonoranClient(new SonoranClientOptions
 {
+    product = SonoranProduct.CAD,
     apiKey = "your-cad-api-key",
     communityId = "your-community-id",
     defaultServerId = 1
@@ -54,6 +55,7 @@ var emergencyCall = await sonoran.Cad.createEmergencyCallV2(new CreateEmergencyC
 ```csharp
 var options = new SonoranClientOptions
 {
+    product = SonoranProduct.CAD,
     apiKey = "your-cad-api-key",
     communityId = "your-community-id",
     apiUrl = "https://api.sonorancad.com",
@@ -68,6 +70,7 @@ var options = new SonoranClientOptions
 
 Supported properties:
 
+- `product`
 - `apiKey`
 - `communityId`
 - `apiUrl`

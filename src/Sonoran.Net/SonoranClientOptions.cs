@@ -2,6 +2,8 @@ namespace Sonoran;
 
 public sealed class SonoranClientOptions
 {
+    public SonoranProduct? product { get; init; }
+
     public string? apiKey { get; init; }
 
     public string? communityId { get; init; }
