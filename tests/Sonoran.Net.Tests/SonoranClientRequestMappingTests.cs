@@ -129,6 +129,49 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task SetAvailableCalloutsV2_UsesBackendCalloutShape()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.setAvailableCalloutsV2(
+        [
+            new AvailableCalloutV2
+            {
+                Id = "armed_suspect",
+                Data = new AvailableCalloutDataV2
+                {
+                    PedActionOnNoActionFound = "Flee",
+                    PedActionMinimumTimeoutInMs = 2000,
+                    PedChanceToFleeFromPlayer = 50,
+                    PedChanceToObtainWeapons = 30,
+                    CalloutName = "Armed Suspect",
+                    CalloutDescriptions = ["Reports of an armed suspect in the area."],
+                    PedChanceToAttackPlayer = 20,
+                    PedActionMaximumTimeoutInMs = 10000,
+                    Enabled = true,
+                    CalloutLocations = [],
+                    PedChanceToSurrender = 30,
+                    PedWeaponData = ["WEAPON_PISTOL"],
+                    CalloutUnitsRequired = new AvailableCalloutUnitsRequiredV2
+                    {
+                        TowRequired = false,
+                        FireRequired = false,
+                        Description = "Single suspect, use caution.",
+                        PoliceRequired = true,
+                        AmbulanceRequired = false
+                    }
+                }
+            }
+        ], 7);
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/7/callouts", GetEscapedUrl(request));
+        Assert.Equal("""{"callouts":[{"id":"armed_suspect","data":{"PedActionOnNoActionFound":"Flee","PedActionMinimumTimeoutInMs":2000,"PedChanceToFleeFromPlayer":50,"PedChanceToObtainWeapons":30,"CalloutName":"Armed Suspect","CalloutDescriptions":["Reports of an armed suspect in the area."],"PedChanceToAttackPlayer":20,"PedActionMaximumTimeoutInMs":10000,"Enabled":true,"CalloutLocations":[],"PedChanceToSurrender":30,"PedWeaponData":["WEAPON_PISTOL"],"CalloutUnitsRequired":{"towRequired":false,"fireRequired":false,"description":"Single suspect, use caution.","policeRequired":true,"ambulanceRequired":false}}}]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task GetAccountUnitsV2_UsesPathAndQuery()
     {
         var handler = new RecordingHandler();

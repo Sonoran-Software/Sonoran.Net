@@ -187,9 +187,83 @@ public sealed record UpdateStreetSignsV2Request
 
 public sealed record AvailableCalloutV2
 {
-    public string? Label { get; init; }
-    public string? Code { get; init; }
-    public int? Priority { get; init; }
+    [JsonPropertyName("id")]
+    public string? Id { get; init; }
+
+    [JsonPropertyName("data")]
+    public AvailableCalloutDataV2? Data { get; init; }
+}
+
+public sealed record AvailableCalloutDataV2
+{
+    [JsonPropertyName("PedActionOnNoActionFound")]
+    public string? PedActionOnNoActionFound { get; init; }
+
+    [JsonPropertyName("PedActionMinimumTimeoutInMs")]
+    public int? PedActionMinimumTimeoutInMs { get; init; }
+
+    [JsonPropertyName("PedChanceToFleeFromPlayer")]
+    public int? PedChanceToFleeFromPlayer { get; init; }
+
+    [JsonPropertyName("PedChanceToObtainWeapons")]
+    public int? PedChanceToObtainWeapons { get; init; }
+
+    [JsonPropertyName("CalloutName")]
+    public string? CalloutName { get; init; }
+
+    [JsonPropertyName("CalloutDescriptions")]
+    public IReadOnlyList<string>? CalloutDescriptions { get; init; }
+
+    [JsonPropertyName("PedChanceToAttackPlayer")]
+    public int? PedChanceToAttackPlayer { get; init; }
+
+    [JsonPropertyName("PedActionMaximumTimeoutInMs")]
+    public int? PedActionMaximumTimeoutInMs { get; init; }
+
+    [JsonPropertyName("Enabled")]
+    public bool? Enabled { get; init; }
+
+    [JsonPropertyName("CalloutLocations")]
+    public IReadOnlyList<AvailableCalloutLocationV2>? CalloutLocations { get; init; }
+
+    [JsonPropertyName("PedChanceToSurrender")]
+    public int? PedChanceToSurrender { get; init; }
+
+    [JsonPropertyName("PedWeaponData")]
+    public IReadOnlyList<string>? PedWeaponData { get; init; }
+
+    [JsonPropertyName("CalloutUnitsRequired")]
+    public AvailableCalloutUnitsRequiredV2? CalloutUnitsRequired { get; init; }
+}
+
+public sealed record AvailableCalloutLocationV2
+{
+    [JsonPropertyName("x")]
+    public double X { get; init; }
+
+    [JsonPropertyName("y")]
+    public double Y { get; init; }
+
+    [JsonPropertyName("z")]
+    public double Z { get; init; }
+}
+
+public sealed record AvailableCalloutUnitsRequiredV2
+{
+    [JsonPropertyName("towRequired")]
+    public bool? TowRequired { get; init; }
+
+    [JsonPropertyName("fireRequired")]
+    public bool? FireRequired { get; init; }
+
+    [JsonPropertyName("description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("policeRequired")]
+    public bool? PoliceRequired { get; init; }
+
+    [JsonPropertyName("ambulanceRequired")]
+    public bool? AmbulanceRequired { get; init; }
 }
 
 public sealed record PagerNatureWordV2
