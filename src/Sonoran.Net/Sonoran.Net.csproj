@@ -8,7 +8,7 @@
     <RootNamespace>Sonoran</RootNamespace>
     <PackageId>Sonoran.Net</PackageId>
     <Title>Sonoran.Net</Title>
-    <Description>C# SDK for Sonoran CAD v2 endpoints.</Description>
+    <Description>C# SDK for Sonoran CAD and CMS v2 endpoints.</Description>
     <RepositoryUrl>https://github.com/Sonoran-Software/Sonoran.Net</RepositoryUrl>
     <PackageReadmeFile>NUGET.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/Sonoran-Software/Sonoran.Net</PackageProjectUrl>

@@ -22,6 +22,7 @@ public sealed partial class SonoranClient : IDisposable
     private readonly HttpClient _httpClient;
     private readonly bool _ownsHttpClient;
     private readonly Func<TimeSpan, CancellationToken, Task> _delay;
+    private readonly string _apiUrl;
 
     public SonoranClient(SonoranClientOptions options, HttpClient? httpClient = null, Func<TimeSpan, CancellationToken, Task>? delay = null)
     {
@@ -31,21 +32,31 @@ public sealed partial class SonoranClient : IDisposable
             throw new ArgumentException("product is required when instancing.", nameof(options));
         }
 
-        if (Options.product != SonoranProduct.CAD && Options.product != SonoranProduct.RADIO)
+        if (Options.product != SonoranProduct.CAD && Options.product != SonoranProduct.CMS && Options.product != SonoranProduct.RADIO)
         {
-            throw new NotSupportedException("Only SonoranProduct.CAD and SonoranProduct.RADIO are currently supported in Sonoran.Net.");
+            throw new NotSupportedException("Only SonoranProduct.CAD, SonoranProduct.CMS, and SonoranProduct.RADIO are currently supported in Sonoran.Net.");
         }
 
         _httpClient = httpClient ?? new HttpClient();
         _ownsHttpClient = httpClient is null;
         _httpClient.Timeout = options.timeout;
         _delay = delay ?? Task.Delay;
+        _apiUrl = !string.IsNullOrWhiteSpace(options.apiUrl)
+            ? options.apiUrl
+            : Options.product switch
+            {
+                SonoranProduct.CMS => "https://api.sonorancms.com",
+                SonoranProduct.RADIO => "https://api.sonoranradio.com",
+                _ => "https://api.sonorancad.com"
+            };
         Cad = new SonoranCadClient(this);
+        Cms = new SonoranCmsClient(this);
         Radio = new SonoranRadioClient(this);
     }
 
     public SonoranClientOptions Options { get; }
     public SonoranCadClient Cad { get; }
+    public SonoranCmsClient Cms { get; }
     public SonoranRadioClient Radio { get; }
 
     public void Dispose()
@@ -152,7 +163,7 @@ public sealed partial class SonoranClient : IDisposable
     private string BuildUrl(string path, IReadOnlyDictionary<string, object?>? query)
     {
         var builder = new StringBuilder();
-        builder.Append(Options.apiUrl.TrimEnd('/'));
+        builder.Append(_apiUrl.TrimEnd('/'));
         builder.Append('/');
         builder.Append(path.TrimStart('/'));
 

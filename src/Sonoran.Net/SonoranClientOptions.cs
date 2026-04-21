@@ -8,7 +8,7 @@ public sealed class SonoranClientOptions
 
     public string? communityId { get; init; }
 
-    public string apiUrl { get; init; } = "https://api.sonorancad.com";
+    public string? apiUrl { get; init; }
 
     public int defaultServerId { get; init; } = 1;
 
