@@ -309,6 +309,13 @@ public sealed record BlipCoordinatesV2
     public double X { get; init; }
     public double Y { get; init; }
     public double? Z { get; init; }
+    public double? W { get; init; }
+}
+
+public sealed record BlipDisplayDataV2
+{
+    public string? Title { get; init; }
+    public string? Text { get; init; }
 }
 
 public sealed record CreateBlipV2Request
@@ -319,6 +326,7 @@ public sealed record CreateBlipV2Request
     public string? Icon { get; init; }
     public string? Color { get; init; }
     public string? Tooltip { get; init; }
+    public IReadOnlyList<BlipDisplayDataV2>? Data { get; init; }
     public double? Radius { get; init; }
 }
 
@@ -330,5 +338,6 @@ public sealed record UpdateBlipV2Request
     public string? Icon { get; init; }
     public string? Color { get; init; }
     public string? Tooltip { get; init; }
+    public IReadOnlyList<BlipDisplayDataV2>? Data { get; init; }
     public double? Radius { get; init; }
 }
