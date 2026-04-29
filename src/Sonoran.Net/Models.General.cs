@@ -8,6 +8,11 @@ public sealed record GetLoginPageV2Query
     public string? CommunityId { get; init; }
 }
 
+public sealed record GetTurnCredentialsV2Query
+{
+    public string? UserId { get; init; }
+}
+
 public sealed record ApplyPermissionKeyV2Request
 {
     [JsonIgnore]

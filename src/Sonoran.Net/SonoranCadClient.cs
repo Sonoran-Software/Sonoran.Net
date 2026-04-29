@@ -72,6 +72,9 @@ public sealed class SonoranCadClient
     public Task<SonoranResponse> getVersionV2(CancellationToken cancellationToken = default) =>
         _client.getVersionV2(cancellationToken);
 
+    public Task<SonoranResponse> getTurnCredentialsV2(GetTurnCredentialsV2Query? query = null, CancellationToken cancellationToken = default) =>
+        _client.getTurnCredentialsV2(query, cancellationToken);
+
     public Task<SonoranResponse> getServersV2(CancellationToken cancellationToken = default) =>
         _client.getServersV2(cancellationToken);
 

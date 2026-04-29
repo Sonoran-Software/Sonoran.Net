@@ -90,6 +90,9 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> getVersionV2(CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, "v2/general/version", cancellationToken: cancellationToken);
 
+    public Task<SonoranResponse> getTurnCredentialsV2(GetTurnCredentialsV2Query? query = null, CancellationToken cancellationToken = default) =>
+        RequestAsync(HttpMethod.Get, "v2/general/turn", query: ToQueryDictionary(query), cancellationToken: cancellationToken);
+
     public Task<SonoranResponse> getServersV2(CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, "v2/general/servers", cancellationToken: cancellationToken);
 

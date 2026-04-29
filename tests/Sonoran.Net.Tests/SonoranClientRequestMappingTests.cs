@@ -43,6 +43,23 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task GetTurnCredentialsV2_UsesOptionalQuerySerialization()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.getTurnCredentialsV2(new GetTurnCredentialsV2Query
+        {
+            UserId = "unit/1"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal(HttpMethod.Get, request.Method);
+        Assert.Equal("https://api.sonorancad.com/v2/general/turn?userId=unit%2F1", GetEscapedUrl(request));
+    }
+
+    [Fact]
     public async Task GetCallsV2_UsesTypedQuerySerialization()
     {
         var handler = new RecordingHandler();
