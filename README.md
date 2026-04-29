@@ -37,6 +37,13 @@ using var sonoran = new SonoranClient(new SonoranClientOptions
 
 var version = await sonoran.Cad.getVersionV2();
 
+var unitStatus = await sonoran.Cad.setUnitStatusV2(new SetUnitStatusV2Request
+{
+    ServerId = 1,
+    Roblox = 123456789,
+    Status = 2
+});
+
 var emergencyCall = await sonoran.Cad.createEmergencyCallV2(new CreateEmergencyCallV2Request
 {
     ServerId = 1,

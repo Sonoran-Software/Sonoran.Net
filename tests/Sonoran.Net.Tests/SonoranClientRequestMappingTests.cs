@@ -119,13 +119,13 @@ public sealed class SonoranClientRequestMappingTests
         _ = await client.Cad.setUnitStatusV2(new SetUnitStatusV2Request
         {
             ServerId = 5,
-            ApiId = "1",
+            Roblox = 123456789,
             Status = 2
         });
 
         var request = Assert.Single(handler.Requests);
         Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/5/units/status", GetEscapedUrl(request));
-        Assert.Equal("""{"apiId":"1","status":2}""", await request.Content!.ReadAsStringAsync());
+        Assert.Equal("""{"roblox":123456789,"status":2}""", await request.Content!.ReadAsStringAsync());
     }
 
     [Fact]
@@ -208,7 +208,23 @@ public sealed class SonoranClientRequestMappingTests
 
         var request = Assert.Single(handler.Requests);
         Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/4/identifier-groups/A%20Shift", GetEscapedUrl(request));
-        Assert.Equal("""{"apiIds":["1"]}""", await request.Content!.ReadAsStringAsync());
+        Assert.Equal("""{"communityUserIds":["1"]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task GetCharactersV2_SupportsRobloxQuery()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.getCharactersV2(new GetCharactersV2Query
+        {
+            Roblox = 123456789
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/civilian/characters?roblox=123456789", GetEscapedUrl(request));
     }
 
     [Fact]

@@ -21,8 +21,14 @@ public sealed record GetCallsV2Query
 
 public sealed record UnitLocationUpdateV2
 {
-    public string? ApiId { get; init; }
     public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
+    public string? ApiId { get; init; }
+    [JsonPropertyName("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    public long? Roblox { get; init; }
     public string? Location { get; init; }
     public double? X { get; init; }
     public double? Y { get; init; }
@@ -40,8 +46,19 @@ public sealed record SetUnitPanicV2Request
 {
     public int? ServerId { get; init; }
     public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
     public string? ApiId { get; init; }
+    [JsonPropertyName("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    [JsonIgnore]
+    public IReadOnlyList<string>? CommunityUserIds { get; init; }
+    [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
+    [JsonPropertyName("communityUserIds")]
+    public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
+    public long? Roblox { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
     public bool IsPanic { get; init; }
 }
@@ -50,8 +67,19 @@ public sealed record SetUnitStatusV2Request
 {
     public int? ServerId { get; init; }
     public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
     public string? ApiId { get; init; }
+    [JsonPropertyName("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    [JsonIgnore]
+    public IReadOnlyList<string>? CommunityUserIds { get; init; }
+    [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
+    [JsonPropertyName("communityUserIds")]
+    public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
+    public long? Roblox { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
     public int Status { get; init; }
 }
@@ -59,7 +87,13 @@ public sealed record SetUnitStatusV2Request
 public sealed record KickUnitV2Request
 {
     public int? ServerId { get; init; }
-    public string ApiId { get; init; } = string.Empty;
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
+    public string? ApiId { get; init; }
+    [JsonPropertyName("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    public long? Roblox { get; init; }
     public string Reason { get; init; } = string.Empty;
 }
 
@@ -90,8 +124,19 @@ public sealed record AddIdentifiersToGroupV2Request
     public int? ServerId { get; init; }
     public string GroupName { get; init; } = string.Empty;
     public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
     public string? ApiId { get; init; }
+    [JsonPropertyName("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    [JsonIgnore]
+    public IReadOnlyList<string>? CommunityUserIds { get; init; }
+    [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
+    [JsonPropertyName("communityUserIds")]
+    public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
+    public long? Roblox { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
 }
 
@@ -134,9 +179,14 @@ public sealed record CreateDispatchCallV2Request
     public string Code { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public IReadOnlyList<DispatchCallNoteV2> Notes { get; init; } = [];
+    [JsonIgnore]
     public IReadOnlyList<string>? CommunityUserIds { get; init; }
     public IReadOnlyList<string>? Accounts { get; init; }
+    [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
+    [JsonPropertyName("communityUserIds")]
+    public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
+    public long? Roblox { get; init; }
     public Dictionary<string, string>? MetaData { get; init; }
     public int? DeleteAfterMinutes { get; init; }
 }
@@ -162,8 +212,19 @@ public sealed record DispatchAttachmentV2Request
 {
     public int? ServerId { get; init; }
     public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
     public string? ApiId { get; init; }
+    [JsonPropertyName("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    [JsonIgnore]
+    public IReadOnlyList<string>? CommunityUserIds { get; init; }
+    [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
+    [JsonPropertyName("communityUserIds")]
+    public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
+    public long? Roblox { get; init; }
     public IReadOnlyList<string>? Accounts { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
 }

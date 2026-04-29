@@ -40,7 +40,7 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> kickUnitV2(KickUnitV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        return RequestAsync(HttpMethod.Delete, $"v2/emergency/servers/{resolvedServerId}/units/kick", body: new { request.ApiId, request.Reason }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Delete, $"v2/emergency/servers/{resolvedServerId}/units/kick", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> getIdentifiersV2(string accountUuid, CancellationToken cancellationToken = default) =>
