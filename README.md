@@ -44,6 +44,19 @@ var unitStatus = await sonoran.Cad.setUnitStatusV2(new SetUnitStatusV2Request
     Status = 2
 });
 
+var locationUpdate = await sonoran.Cad.updateUnitLocationsV2(new UpdateUnitLocationsV2Request
+{
+    ServerId = 1,
+    Updates = new[]
+    {
+        new UnitLocationUpdateV2
+        {
+            Roblox = 123456789,
+            Location = "Mission Row"
+        }
+    }
+});
+
 var emergencyCall = await sonoran.Cad.createEmergencyCallV2(new CreateEmergencyCallV2Request
 {
     ServerId = 1,

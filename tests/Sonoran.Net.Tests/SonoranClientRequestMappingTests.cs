@@ -129,6 +129,31 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task UpdateUnitLocationsV2_SupportsRobloxTargets()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.updateUnitLocationsV2(new UpdateUnitLocationsV2Request
+        {
+            ServerId = 5,
+            Updates =
+            [
+                new UnitLocationUpdateV2
+                {
+                    Roblox = 123456789,
+                    Location = "Mission Row"
+                }
+            ]
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/5/unit-locations", GetEscapedUrl(request));
+        Assert.Equal("""{"updates":[{"roblox":123456789,"location":"Mission Row"}]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task SetAvailableCalloutsV2_UsesBackendCalloutShape()
     {
         var handler = new RecordingHandler();
