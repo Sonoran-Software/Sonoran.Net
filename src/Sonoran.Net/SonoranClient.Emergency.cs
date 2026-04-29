@@ -207,6 +207,6 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> deleteBlipsV2(IReadOnlyList<int> ids, int? serverId = null, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(serverId);
-        return RequestAsync(HttpMethod.Delete, $"v2/emergency/servers/{resolvedServerId}/blips", body: new { ids }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Post, $"v2/emergency/servers/{resolvedServerId}/blips/delete", body: new { ids }, cancellationToken: cancellationToken);
     }
 }
