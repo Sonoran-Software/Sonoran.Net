@@ -220,3 +220,20 @@ public sealed record SendPhotoV2Request
     public long? Roblox { get; init; }
     public string Url { get; init; } = string.Empty;
 }
+
+public sealed record UploadBodycamRecordingV2Request
+{
+    public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
+    public string? ApiId { get; init; }
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    public long DurationMs { get; init; }
+    public int? IdentId { get; init; }
+    public string? UnitNumber { get; init; }
+    public string? UnitLocation { get; init; }
+    public string FileName { get; init; } = string.Empty;
+    public byte[] FileContent { get; init; } = [];
+    public string ContentType { get; init; } = "video/webm";
+}

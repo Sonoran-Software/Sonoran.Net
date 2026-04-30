@@ -66,6 +66,18 @@ var emergencyCall = await sonoran.Cad.createEmergencyCallV2(new CreateEmergencyC
     Description = "Structure fire with visible smoke.",
     DeleteAfterMinutes = 30
 });
+
+var uploadedBodycam = await sonoran.Cad.uploadBodycamRecordingV2(new UploadBodycamRecordingV2Request
+{
+    AccountUuid = "USER_ACCOUNT_UUID",
+    DurationMs = 90000,
+    IdentId = 123,
+    UnitNumber = "1A-12",
+    UnitLocation = "Senora Fwy / Route 68",
+    FileName = "bodycam-clip.webm",
+    FileContent = await File.ReadAllBytesAsync("bodycam-clip.webm"),
+    ContentType = "video/webm"
+});
 ```
 
 ## Core Types
@@ -123,6 +135,7 @@ The client mirrors the current CAD v2 helper names, including methods such as:
 
 - `getVersionV2()`
 - `getInfoV2()`
+- `uploadBodycamRecordingV2(...)`
 - `getCharactersV2(...)`
 - `createEmergencyCallV2(...)`
 - `createDispatchCallV2(...)`

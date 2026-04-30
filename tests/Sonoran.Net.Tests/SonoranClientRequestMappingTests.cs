@@ -235,6 +235,37 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task UploadBodycamRecordingV2_UsesMultipartRequest()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.uploadBodycamRecordingV2(new UploadBodycamRecordingV2Request
+        {
+            ApiId = "1",
+            DurationMs = 90000,
+            IdentId = 123,
+            UnitNumber = "1A-12",
+            UnitLocation = "Senora Fwy / Route 68",
+            FileName = "bodycam-clip.webm",
+            FileContent = Encoding.UTF8.GetBytes("webm-data")
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal(HttpMethod.Post, request.Method);
+        Assert.Equal("https://api.sonorancad.com/v2/general/bodycam-recordings", GetEscapedUrl(request));
+        Assert.Equal("Bearer test-key", request.Headers.Authorization?.ToString());
+        Assert.NotNull(request.Content);
+        Assert.Equal("multipart/form-data", request.Content!.Headers.ContentType?.MediaType);
+
+        var body = await request.Content.ReadAsStringAsync();
+        Assert.Contains("name=communityUserId", body);
+        Assert.Contains("name=file; filename=bodycam-clip.webm", body);
+        Assert.Contains("webm-data", body);
+    }
+
+    [Fact]
     public async Task AddIdentifiersToGroupV2_UsesPathValueAndTypedBody()
     {
         var handler = new RecordingHandler();

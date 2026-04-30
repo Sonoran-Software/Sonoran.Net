@@ -132,6 +132,68 @@ public sealed partial class SonoranClient : IDisposable
         };
     }
 
+    private async Task<SonoranResponse> RequestMultipartAsync(HttpMethod method, string path, Func<HttpContent> contentFactory, IReadOnlyDictionary<string, object?>? query = null, bool authenticated = true, CancellationToken cancellationToken = default)
+    {
+        for (var attempt = 0; attempt <= CadV2RateLimitMaxRetries; attempt++)
+        {
+            using var request = new HttpRequestMessage(method, BuildUrl(path, query));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if (authenticated)
+            {
+                if (string.IsNullOrWhiteSpace(Options.apiKey))
+                {
+                    throw new InvalidOperationException("apiKey is required for authenticated requests.");
+                }
+
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Options.apiKey);
+            }
+
+            if (Options.headers is not null)
+            {
+                foreach (var header in Options.headers)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+            }
+
+            request.Content = contentFactory();
+
+            using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var parsed = await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
+            {
+                return new SonoranResponse
+                {
+                    success = true,
+                    data = parsed
+                };
+            }
+
+            if (response.StatusCode == (HttpStatusCode)429 && attempt < CadV2RateLimitMaxRetries)
+            {
+                var delayMs = ResolveRetryDelayMs(response, attempt);
+                if (delayMs > 0)
+                {
+                    await _delay(TimeSpan.FromMilliseconds(delayMs), cancellationToken).ConfigureAwait(false);
+                }
+                continue;
+            }
+
+            return new SonoranResponse
+            {
+                success = false,
+                reason = ToReason(parsed)
+            };
+        }
+
+        return new SonoranResponse
+        {
+            success = false,
+            reason = "Request was rate limited."
+        };
+    }
+
     private static async Task<JsonNode?> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NoContent || response.Content is null)

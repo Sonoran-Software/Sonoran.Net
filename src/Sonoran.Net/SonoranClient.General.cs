@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+
 namespace Sonoran;
 
 public sealed partial class SonoranClient
@@ -113,6 +115,44 @@ public sealed partial class SonoranClient
 
     public Task<SonoranResponse> sendPhotoV2(SendPhotoV2Request request, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Post, "v2/general/photos", body: request, cancellationToken: cancellationToken);
+
+    public Task<SonoranResponse> uploadBodycamRecordingV2(UploadBodycamRecordingV2Request request, CancellationToken cancellationToken = default)
+    {
+        return RequestMultipartAsync(HttpMethod.Post, "v2/general/bodycam-recordings", () =>
+        {
+            var content = new MultipartFormDataContent();
+
+            var fileContent = new ByteArrayContent(request.FileContent);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(string.IsNullOrWhiteSpace(request.ContentType) ? "video/webm" : request.ContentType);
+            content.Add(fileContent, "file", request.FileName);
+
+            if (!string.IsNullOrWhiteSpace(request.AccountUuid))
+            {
+                content.Add(new StringContent(request.AccountUuid), "accountUuid");
+            }
+            if (!string.IsNullOrWhiteSpace(request.SerializedCommunityUserId))
+            {
+                content.Add(new StringContent(request.SerializedCommunityUserId), "communityUserId");
+            }
+
+            content.Add(new StringContent(request.DurationMs.ToString(System.Globalization.CultureInfo.InvariantCulture)), "durationMs");
+
+            if (request.IdentId.HasValue)
+            {
+                content.Add(new StringContent(request.IdentId.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)), "identId");
+            }
+            if (!string.IsNullOrWhiteSpace(request.UnitNumber))
+            {
+                content.Add(new StringContent(request.UnitNumber), "unitNumber");
+            }
+            if (!string.IsNullOrWhiteSpace(request.UnitLocation))
+            {
+                content.Add(new StringContent(request.UnitLocation), "unitLocation");
+            }
+
+            return content;
+        }, cancellationToken: cancellationToken);
+    }
 
     public Task<SonoranResponse> getInfoV2(CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, "v2/general/info", cancellationToken: cancellationToken);

@@ -93,6 +93,9 @@ public sealed class SonoranCadClient
     public Task<SonoranResponse> sendPhotoV2(SendPhotoV2Request request, CancellationToken cancellationToken = default) =>
         _client.sendPhotoV2(request, cancellationToken);
 
+    public Task<SonoranResponse> uploadBodycamRecordingV2(UploadBodycamRecordingV2Request request, CancellationToken cancellationToken = default) =>
+        _client.uploadBodycamRecordingV2(request, cancellationToken);
+
     public Task<SonoranResponse> getInfoV2(CancellationToken cancellationToken = default) =>
         _client.getInfoV2(cancellationToken);
 
