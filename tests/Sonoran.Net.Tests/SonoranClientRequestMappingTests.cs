@@ -171,6 +171,40 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task SetStationsV2_UsesTopLevelPayloadShape()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.setStationsV2(new StationConfigV2
+        {
+            Locations =
+            [
+                new StationLocationV2
+                {
+                    Name = "Mission Row",
+                    Coordinates = new BlipCoordinatesV2
+                    {
+                        X = 425.1,
+                        Y = -979.2,
+                        Z = 30.7,
+                        W = 0.0
+                    },
+                    Doors = ["bay_1", "bay_2"],
+                    Icon = "fas fa-building"
+                }
+            ],
+            Tones = ["tone_station_open.mp3"],
+            UnitColors = ["#2563eb", "#ef4444"]
+        }, 7);
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/7/stations", GetEscapedUrl(request));
+        Assert.Equal("""{"locations":[{"name":"Mission Row","coordinates":{"x":425.1,"y":-979.2,"z":30.7,"w":0},"doors":["bay_1","bay_2"],"icon":"fas fa-building"}],"tones":["tone_station_open.mp3"],"unitColors":["#2563eb","#ef4444"]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task SetAvailableCalloutsV2_UsesBackendCalloutShape()
     {
         var handler = new RecordingHandler();

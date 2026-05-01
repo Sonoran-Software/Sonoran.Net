@@ -182,7 +182,7 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> setStationsV2(StationConfigV2 config, int? serverId = null, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(serverId);
-        return RequestAsync(HttpMethod.Put, $"v2/emergency/servers/{resolvedServerId}/stations", body: new { config }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Put, $"v2/emergency/servers/{resolvedServerId}/stations", body: config, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> getBlipsV2(int? serverId = null, CancellationToken cancellationToken = default)

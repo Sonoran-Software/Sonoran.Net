@@ -350,19 +350,20 @@ public sealed record SetPagerConfigV2Request
     public IReadOnlyList<PagerNodeV2>? Nodes { get; init; }
 }
 
-public sealed record StationV2
-{
-    public string Label { get; init; } = string.Empty;
-    public string? Department { get; init; }
-    public string? Subdivision { get; init; }
-    public IReadOnlyList<int>? IdentIds { get; init; }
-    public Dictionary<string, object?>? Data { get; init; }
-}
-
 public sealed record StationConfigV2
 {
-    public bool? Enabled { get; init; }
-    public IReadOnlyList<StationV2>? Stations { get; init; }
+    public IReadOnlyList<StationLocationV2>? Locations { get; init; }
+    public IReadOnlyList<string>? Tones { get; init; }
+    [JsonPropertyName("unitColors")]
+    public IReadOnlyList<string>? UnitColors { get; init; }
+}
+
+public sealed record StationLocationV2
+{
+    public string Name { get; init; } = string.Empty;
+    public BlipCoordinatesV2 Coordinates { get; init; } = new();
+    public IReadOnlyList<string>? Doors { get; init; }
+    public string? Icon { get; init; }
 }
 
 public sealed record BlipCoordinatesV2
