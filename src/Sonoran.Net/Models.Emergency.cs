@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Sonoran;
 
@@ -26,7 +26,7 @@ public sealed record UnitLocationUpdateV2
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string? Location { get; init; }
@@ -50,13 +50,13 @@ public sealed record SetUnitPanicV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     [JsonIgnore]
     public IReadOnlyList<string>? CommunityUserIds { get; init; }
     [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
-    [JsonPropertyName("communityUserIds")]
+    [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
@@ -71,13 +71,13 @@ public sealed record SetUnitStatusV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     [JsonIgnore]
     public IReadOnlyList<string>? CommunityUserIds { get; init; }
     [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
-    [JsonPropertyName("communityUserIds")]
+    [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
@@ -91,7 +91,7 @@ public sealed record KickUnitV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string Reason { get; init; } = string.Empty;
@@ -128,13 +128,13 @@ public sealed record AddIdentifiersToGroupV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     [JsonIgnore]
     public IReadOnlyList<string>? CommunityUserIds { get; init; }
     [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
-    [JsonPropertyName("communityUserIds")]
+    [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
@@ -153,16 +153,16 @@ public sealed record CreateEmergencyCallV2Request
 
 public sealed record DispatchCallNoteV2
 {
-    [JsonPropertyName("time")]
+    [JsonProperty("time")]
     public string? Time { get; init; }
 
-    [JsonPropertyName("label")]
+    [JsonProperty("label")]
     public string? Label { get; init; }
 
-    [JsonPropertyName("type")]
+    [JsonProperty("type")]
     public string? Type { get; init; }
 
-    [JsonPropertyName("content")]
+    [JsonProperty("content")]
     public string? Content { get; init; }
 }
 
@@ -184,7 +184,7 @@ public sealed record CreateDispatchCallV2Request
     public IReadOnlyList<string>? Accounts { get; init; }
     [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
-    [JsonPropertyName("communityUserIds")]
+    [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
     public Dictionary<string, string>? MetaData { get; init; }
@@ -216,13 +216,13 @@ public sealed record DispatchAttachmentV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     [JsonIgnore]
     public IReadOnlyList<string>? CommunityUserIds { get; init; }
     [JsonIgnore]
     public IReadOnlyList<string>? ApiIds { get; init; }
-    [JsonPropertyName("communityUserIds")]
+    [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
     public IReadOnlyList<string>? Accounts { get; init; }
@@ -248,82 +248,82 @@ public sealed record UpdateStreetSignsV2Request
 
 public sealed record AvailableCalloutV2
 {
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public string? Id { get; init; }
 
-    [JsonPropertyName("data")]
+    [JsonProperty("data")]
     public AvailableCalloutDataV2? Data { get; init; }
 }
 
 public sealed record AvailableCalloutDataV2
 {
-    [JsonPropertyName("PedActionOnNoActionFound")]
+    [JsonProperty("PedActionOnNoActionFound")]
     public string? PedActionOnNoActionFound { get; init; }
 
-    [JsonPropertyName("PedActionMinimumTimeoutInMs")]
+    [JsonProperty("PedActionMinimumTimeoutInMs")]
     public int? PedActionMinimumTimeoutInMs { get; init; }
 
-    [JsonPropertyName("PedChanceToFleeFromPlayer")]
+    [JsonProperty("PedChanceToFleeFromPlayer")]
     public int? PedChanceToFleeFromPlayer { get; init; }
 
-    [JsonPropertyName("PedChanceToObtainWeapons")]
+    [JsonProperty("PedChanceToObtainWeapons")]
     public int? PedChanceToObtainWeapons { get; init; }
 
-    [JsonPropertyName("CalloutName")]
+    [JsonProperty("CalloutName")]
     public string? CalloutName { get; init; }
 
-    [JsonPropertyName("CalloutDescriptions")]
+    [JsonProperty("CalloutDescriptions")]
     public IReadOnlyList<string>? CalloutDescriptions { get; init; }
 
-    [JsonPropertyName("PedChanceToAttackPlayer")]
+    [JsonProperty("PedChanceToAttackPlayer")]
     public int? PedChanceToAttackPlayer { get; init; }
 
-    [JsonPropertyName("PedActionMaximumTimeoutInMs")]
+    [JsonProperty("PedActionMaximumTimeoutInMs")]
     public int? PedActionMaximumTimeoutInMs { get; init; }
 
-    [JsonPropertyName("Enabled")]
+    [JsonProperty("Enabled")]
     public bool? Enabled { get; init; }
 
-    [JsonPropertyName("CalloutLocations")]
+    [JsonProperty("CalloutLocations")]
     public IReadOnlyList<AvailableCalloutLocationV2>? CalloutLocations { get; init; }
 
-    [JsonPropertyName("PedChanceToSurrender")]
+    [JsonProperty("PedChanceToSurrender")]
     public int? PedChanceToSurrender { get; init; }
 
-    [JsonPropertyName("PedWeaponData")]
+    [JsonProperty("PedWeaponData")]
     public IReadOnlyList<string>? PedWeaponData { get; init; }
 
-    [JsonPropertyName("CalloutUnitsRequired")]
+    [JsonProperty("CalloutUnitsRequired")]
     public AvailableCalloutUnitsRequiredV2? CalloutUnitsRequired { get; init; }
 }
 
 public sealed record AvailableCalloutLocationV2
 {
-    [JsonPropertyName("x")]
+    [JsonProperty("x")]
     public double X { get; init; }
 
-    [JsonPropertyName("y")]
+    [JsonProperty("y")]
     public double Y { get; init; }
 
-    [JsonPropertyName("z")]
+    [JsonProperty("z")]
     public double Z { get; init; }
 }
 
 public sealed record AvailableCalloutUnitsRequiredV2
 {
-    [JsonPropertyName("towRequired")]
+    [JsonProperty("towRequired")]
     public bool? TowRequired { get; init; }
 
-    [JsonPropertyName("fireRequired")]
+    [JsonProperty("fireRequired")]
     public bool? FireRequired { get; init; }
 
-    [JsonPropertyName("description")]
+    [JsonProperty("description")]
     public string? Description { get; init; }
 
-    [JsonPropertyName("policeRequired")]
+    [JsonProperty("policeRequired")]
     public bool? PoliceRequired { get; init; }
 
-    [JsonPropertyName("ambulanceRequired")]
+    [JsonProperty("ambulanceRequired")]
     public bool? AmbulanceRequired { get; init; }
 }
 
@@ -354,7 +354,7 @@ public sealed record StationConfigV2
 {
     public IReadOnlyList<StationLocationV2>? Locations { get; init; }
     public IReadOnlyList<string>? Tones { get; init; }
-    [JsonPropertyName("unitColors")]
+    [JsonProperty("unitColors")]
     public IReadOnlyList<string>? UnitColors { get; init; }
 }
 

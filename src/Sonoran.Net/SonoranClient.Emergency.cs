@@ -49,7 +49,6 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> getAccountUnitsV2(GetAccountUnitsV2Query request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(request.AccountUuid);
         var query = new { request.OnlyOnline, request.OnlyUnits, request.Limit, request.Offset };
         return RequestAsync(HttpMethod.Get, $"v2/emergency/servers/{resolvedServerId}/accounts/{EncodePathSegment(request.AccountUuid)}/units", query: ToQueryDictionary(query), cancellationToken: cancellationToken);
     }
@@ -78,7 +77,6 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> addIdentifiersToGroupV2(AddIdentifiersToGroupV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(request.GroupName);
         return RequestAsync(HttpMethod.Put, $"v2/emergency/servers/{resolvedServerId}/identifier-groups/{EncodePathSegment(request.GroupName)}", body: WithoutKeys(request, nameof(request.ServerId), nameof(request.GroupName)), cancellationToken: cancellationToken);
     }
 

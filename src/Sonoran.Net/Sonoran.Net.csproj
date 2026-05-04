@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net452;net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
     <VersionPrefix>0.1.0</VersionPrefix>
     <RootNamespace>Sonoran</RootNamespace>
     <PackageId>Sonoran.Net</PackageId>
@@ -16,6 +17,11 @@
 
   <ItemGroup>
     <None Include="..\..\NUGET.md" Pack="true" PackagePath="\" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net452" Version="1.0.3" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

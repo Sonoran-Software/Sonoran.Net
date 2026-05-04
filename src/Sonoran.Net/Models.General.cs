@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Sonoran;
 
@@ -19,7 +19,7 @@ public sealed record ApplyPermissionKeyV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string PermissionKey { get; init; } = string.Empty;
@@ -32,7 +32,7 @@ public sealed record BanUserV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public bool? IsBan { get; init; }
@@ -65,7 +65,7 @@ public sealed record CreateRecordV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string? User { get; init; }
@@ -82,7 +82,7 @@ public sealed record UpdateRecordV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string? User { get; init; }
@@ -101,7 +101,7 @@ public sealed record SendRecordDraftV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
 }
@@ -113,7 +113,7 @@ public sealed record LookupV2Request
     public string? NotifyCommunityUserId { get; init; }
     [JsonIgnore]
     public string? NotifyApiId { get; init; }
-    [JsonPropertyName("notifyCommunityUserId")]
+    [JsonProperty("notifyCommunityUserId")]
     public string? SerializedNotifyCommunityUserId => NotifyCommunityUserId ?? NotifyApiId;
     public long? NotifyRoblox { get; init; }
     public IReadOnlyList<int> Types { get; init; } = [];
@@ -139,7 +139,7 @@ public sealed record LookupByValueV2Request
     public string? NotifyCommunityUserId { get; init; }
     [JsonIgnore]
     public string? NotifyApiId { get; init; }
-    [JsonPropertyName("notifyCommunityUserId")]
+    [JsonProperty("notifyCommunityUserId")]
     public string? SerializedNotifyCommunityUserId => NotifyCommunityUserId ?? NotifyApiId;
     public long? NotifyRoblox { get; init; }
 }
@@ -161,7 +161,7 @@ public sealed record GetAccountV2Query
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string? Username { get; init; }
@@ -187,7 +187,7 @@ public sealed record SetAccountPermissionsV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public IReadOnlyList<string>? Add { get; init; }
@@ -215,7 +215,7 @@ public sealed record SendPhotoV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string Url { get; init; } = string.Empty;

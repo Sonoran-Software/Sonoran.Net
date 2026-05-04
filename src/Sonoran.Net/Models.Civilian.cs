@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Sonoran;
 
@@ -9,7 +9,7 @@ public sealed record GetCharactersV2Query
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
 }
@@ -22,7 +22,7 @@ public sealed record SetSelectedCharacterV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
 }
@@ -34,7 +34,7 @@ public sealed record GetCharacterLinksV2Query
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
 }
@@ -46,7 +46,7 @@ public sealed record CharacterLinkTargetV2Request
     public string? CommunityUserId { get; init; }
     [JsonIgnore]
     public string? ApiId { get; init; }
-    [JsonPropertyName("communityUserId")]
+    [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
 }

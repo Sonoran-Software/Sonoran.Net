@@ -2,8 +2,9 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Sonoran;
 
@@ -13,10 +14,10 @@ public sealed partial class SonoranClient : IDisposable
     private const int CadV2RateLimitDefaultDelayMs = 1000;
     private const int CadV2RateLimitMaxDelayMs = 10000;
 
-    private static readonly JsonSerializerOptions SerializerOptions = new()
+    private static readonly JsonSerializerSettings SerializerSettings = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        NullValueHandling = NullValueHandling.Ignore
     };
 
     private readonly HttpClient _httpClient;
@@ -94,7 +95,7 @@ public sealed partial class SonoranClient : IDisposable
 
             if (body is not null)
             {
-                request.Content = new StringContent(JsonSerializer.Serialize(body, SerializerOptions), Encoding.UTF8, "application/json");
+                request.Content = new StringContent(JsonConvert.SerializeObject(body, SerializerSettings), Encoding.UTF8, "application/json");
             }
 
             using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -194,14 +195,19 @@ public sealed partial class SonoranClient : IDisposable
         };
     }
 
-    private static async Task<JsonNode?> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async Task<JToken?> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NoContent || response.Content is null)
         {
             return null;
         }
 
-        var rawBody = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        var rawBody =
+#if NET8_0_OR_GREATER
+            await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
+            await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
         if (string.IsNullOrWhiteSpace(rawBody))
         {
             return null;
@@ -212,14 +218,14 @@ public sealed partial class SonoranClient : IDisposable
         {
             try
             {
-                return JsonNode.Parse(rawBody);
+                return JToken.Parse(rawBody);
             }
             catch (JsonException)
             {
             }
         }
 
-        return JsonValue.Create(rawBody);
+        return new JValue(rawBody);
     }
 
     private string BuildUrl(string path, IReadOnlyDictionary<string, object?>? query)
@@ -306,7 +312,11 @@ public sealed partial class SonoranClient : IDisposable
 
     private static string EncodePathSegment(string value)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(value);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(value));
+        }
+
         return Uri.EscapeDataString(value);
     }
 
@@ -317,20 +327,20 @@ public sealed partial class SonoranClient : IDisposable
             return null;
         }
 
-        var node = JsonSerializer.SerializeToNode(value, SerializerOptions) as JsonObject;
+        var node = JObject.FromObject(value, JsonSerializer.Create(SerializerSettings));
         if (node is null || node.Count == 0)
         {
             return null;
         }
 
-        return node.ToDictionary(static pair => pair.Key, static pair => ToObject(pair.Value));
+        return node.Properties().ToDictionary(static property => property.Name, static property => ToObject(property.Value));
     }
 
     private static object WithoutServerId<T>(T value) where T : notnull => WithoutKeys(value, "ServerId");
 
     private static object WithoutKeys<T>(T value, params string[] propertyNames) where T : notnull
     {
-        var node = JsonSerializer.SerializeToNode(value, SerializerOptions) as JsonObject ?? [];
+        var node = JObject.FromObject(value, JsonSerializer.Create(SerializerSettings));
         foreach (var propertyName in propertyNames)
         {
             var jsonName = char.ToLowerInvariant(propertyName[0]) + propertyName[1..];
@@ -339,25 +349,21 @@ public sealed partial class SonoranClient : IDisposable
         return node;
     }
 
-    private static object? ToObject(JsonNode? node)
+    private static object? ToObject(JToken? node)
     {
         return node switch
         {
             null => null,
-            JsonValue value when value.TryGetValue<string>(out var stringValue) => stringValue,
-            JsonValue value when value.TryGetValue<bool>(out var boolValue) => boolValue,
-            JsonValue value when value.TryGetValue<int>(out var intValue) => intValue,
-            JsonValue value when value.TryGetValue<long>(out var longValue) => longValue,
-            JsonValue value when value.TryGetValue<decimal>(out var decimalValue) => decimalValue,
-            JsonArray array => array.Select(ToObject).ToList(),
-            JsonObject obj => obj.ToDictionary(static pair => pair.Key, static pair => ToObject(pair.Value)),
-            _ => node.ToJsonString()
+            JValue value => value.Value,
+            JArray array => array.Select(ToObject).ToList(),
+            JObject obj => obj.Properties().ToDictionary(static property => property.Name, static property => ToObject(property.Value)),
+            _ => node.ToString(Formatting.None)
         };
     }
 
-    private static object? ToReason(JsonNode? node)
+    private static object? ToReason(JToken? node)
     {
-        if (node is JsonValue value && value.TryGetValue<string>(out var stringReason))
+        if (node is JValue { Value: string stringReason })
         {
             return stringReason;
         }

@@ -2,6 +2,8 @@
 
 `Sonoran.Net` is the C# package for Sonoran CAD integrations.
 
+The package includes a `.NET Framework 4.5.2` build for FiveM resources and a `.NET 8` build for modern .NET applications.
+
 ## Install
 
 ```sh
@@ -15,6 +17,7 @@ using Sonoran;
 
 using var sonoran = new SonoranClient(new SonoranClientOptions
 {
+    product = SonoranProduct.CAD,
     apiKey = "your-cad-api-key",
     communityId = "your-community-id",
     apiUrl = "https://api.sonorancad.com",
