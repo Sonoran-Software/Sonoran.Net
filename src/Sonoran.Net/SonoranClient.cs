@@ -33,6 +33,13 @@ public sealed partial class SonoranClient : IDisposable
     private readonly Func<TimeSpan, CancellationToken, Task> _delay;
     private readonly string _apiUrl;
 
+    private readonly Dictionary<SonoranProduct, string> AllowedCommonNames = new()
+    {
+        { SonoranProduct.CAD, "api.sonorancad.com" },
+        { SonoranProduct.CMS, "api.sonorancms.com" },
+        { SonoranProduct.RADIO, "api.sonoranradio.com" }
+    };
+
     public SonoranClient(SonoranClientOptions options, HttpClient? httpClient = null, Func<TimeSpan, CancellationToken, Task>? delay = null)
     {
         Options = options ?? throw new ArgumentNullException(nameof(options));
@@ -45,6 +52,24 @@ public sealed partial class SonoranClient : IDisposable
         {
             throw new NotSupportedException("Only SonoranProduct.CAD, SonoranProduct.CMS, and SonoranProduct.RADIO are currently supported in Sonoran.Net.");
         }
+
+        // Thanks to FiveM's Mono, we have to do certificate validation ourselves
+        ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+        {
+            if (DateTime.Parse(cert!.GetExpirationDateString()) < DateTime.Now)
+            {
+                throw new HttpRequestException($"Certificate expired: {cert.GetExpirationDateString()}");
+            }
+
+            string? commonName = ExtractCommonName(cert.Subject);
+
+            if (string.IsNullOrEmpty(commonName) || !AllowedCommonNames.ContainsValue(commonName!))
+            {
+                throw new HttpRequestException("Certificate subject mismatch");
+            }
+
+            return true;
+        };
 
         _httpClient = httpClient ?? new HttpClient();
         _ownsHttpClient = httpClient is null;
@@ -377,5 +402,20 @@ public sealed partial class SonoranClient : IDisposable
         }
 
         return node;
+    }
+
+    private static string? ExtractCommonName(string subject)
+    {
+        string[] parts = subject.Split(',');
+
+        foreach (string part in parts)
+        {
+            if (part.Trim().StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
+            {
+                return part.Trim().Substring(3);  // Return the value after "CN="
+            }
+        }
+
+        return null;
     }
 }
