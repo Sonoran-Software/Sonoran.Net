@@ -22,19 +22,19 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> updateUnitLocationsV2(UpdateUnitLocationsV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/unit-locations", body: new { request.Updates }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/unit-locations", body: new { request.Updates }, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setUnitPanicV2(SetUnitPanicV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/units/panic", body: WithoutServerId(request), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/units/panic", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setUnitStatusV2(SetUnitStatusV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/units/status", body: WithoutServerId(request), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/units/status", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> kickUnitV2(KickUnitV2Request request, CancellationToken cancellationToken = default)
@@ -65,7 +65,7 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> updateIdentifierV2(string accountUuid, int identId, IdentifierV2Request request, CancellationToken cancellationToken = default)
     {
         AssertPositiveInteger(identId, nameof(identId));
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/accounts/{EncodePathSegment(accountUuid)}/identifiers/{identId}", body: request, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/accounts/{EncodePathSegment(accountUuid)}/identifiers/{identId}", body: request, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> deleteIdentifierV2(string accountUuid, int identId, CancellationToken cancellationToken = default)
@@ -103,7 +103,7 @@ public sealed partial class SonoranClient
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
         AssertPositiveInteger(callId, nameof(callId));
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls/{callId}", body: WithoutServerId(request), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls/{callId}", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> attachUnitsToDispatchCallV2(int callId, DispatchAttachmentV2Request request, CancellationToken cancellationToken = default)
@@ -123,7 +123,7 @@ public sealed partial class SonoranClient
     {
         var resolvedServerId = ResolveServerId(serverId);
         AssertPositiveInteger(callId, nameof(callId));
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls/{callId}/postal", body: new { postal }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls/{callId}/postal", body: new { postal }, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setDispatchPrimaryV2(int callId, int identId, bool trackPrimary = false, int? serverId = null, CancellationToken cancellationToken = default)
@@ -131,7 +131,7 @@ public sealed partial class SonoranClient
         var resolvedServerId = ResolveServerId(serverId);
         AssertPositiveInteger(callId, nameof(callId));
         AssertPositiveInteger(identId, nameof(identId));
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls/{callId}/primary", body: new { identId, trackPrimary }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls/{callId}/primary", body: new { identId, trackPrimary }, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> addDispatchNoteV2(int callId, AddDispatchNoteV2Request request, CancellationToken cancellationToken = default)
@@ -150,7 +150,7 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> updateStreetSignsV2(UpdateStreetSignsV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/street-signs", body: WithoutServerId(request), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/street-signs", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setStreetSignConfigV2(IReadOnlyList<Dictionary<string, object?>> signs, int? serverId = null, CancellationToken cancellationToken = default)
@@ -199,7 +199,7 @@ public sealed partial class SonoranClient
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
         AssertPositiveInteger(blipId, nameof(blipId));
-        return RequestAsync(HttpMethod.Patch, $"v2/emergency/servers/{resolvedServerId}/blips/{blipId}", body: WithoutServerId(request), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/emergency/servers/{resolvedServerId}/blips/{blipId}", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> deleteBlipsV2(IReadOnlyList<int> ids, int? serverId = null, CancellationToken cancellationToken = default)

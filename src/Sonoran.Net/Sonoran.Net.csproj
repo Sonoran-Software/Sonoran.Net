@@ -21,8 +21,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
-    <Reference Include="System.Net.Http" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net452" Version="1.0.3" PrivateAssets="all" />
   </ItemGroup>
+
+  <Target Name="AddNet452SystemNetHttpReference" BeforeTargets="CoreCompile" Condition="'$(TargetFramework)' == 'net452'">
+    <ItemGroup>
+      <ReferencePathWithRefAssemblies Include="$([MSBuild]::EnsureTrailingSlash($(NuGetPackageRoot)))microsoft.netframework.referenceassemblies.net452/1.0.3/build/.NETFramework/v4.5.2/mscorlib.dll" />
+      <ReferencePathWithRefAssemblies Include="$([MSBuild]::EnsureTrailingSlash($(NuGetPackageRoot)))microsoft.netframework.referenceassemblies.net452/1.0.3/build/.NETFramework/v4.5.2/System.dll" />
+      <ReferencePathWithRefAssemblies Include="$([MSBuild]::EnsureTrailingSlash($(NuGetPackageRoot)))microsoft.netframework.referenceassemblies.net452/1.0.3/build/.NETFramework/v4.5.2/System.Core.dll" />
+      <ReferencePathWithRefAssemblies Include="$([MSBuild]::EnsureTrailingSlash($(NuGetPackageRoot)))microsoft.netframework.referenceassemblies.net452/1.0.3/build/.NETFramework/v4.5.2/System.Net.Http.dll" />
+      <ReferencePathWithRefAssemblies Include="$([MSBuild]::EnsureTrailingSlash($(NuGetPackageRoot)))newtonsoft.json/13.0.3/lib/net45/Newtonsoft.Json.dll" />
+    </ItemGroup>
+  </Target>
 
 </Project>

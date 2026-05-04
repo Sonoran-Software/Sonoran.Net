@@ -25,13 +25,13 @@ public sealed partial class SonoranClient
     {
         var resolvedServerId = ResolveServerId(serverId);
         AssertPositiveInteger(roomId, nameof(roomId));
-        return RequestAsync(HttpMethod.Patch, $"v2/servers/{resolvedServerId}/rooms/{roomId}/users/{EncodePathSegment(identity)}/channels", body: options ?? new { }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedServerId}/rooms/{roomId}/users/{EncodePathSegment(identity)}/channels", body: options ?? new { }, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setUserDisplayNameV2(SetUserDisplayNameV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
-        return RequestAsync(HttpMethod.Patch, $"v2/servers/{resolvedServerId}/users/display-name", body: WithoutServerId(request), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedServerId}/users/display-name", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> approveMembersV2(IReadOnlyList<string> accIds, int? serverId = null, CancellationToken cancellationToken = default)
@@ -55,13 +55,13 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> setMemberDisplayNamesV2(IReadOnlyList<MemberDisplayNameV2Change> accNicknames, int? serverId = null, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(serverId);
-        return RequestAsync(HttpMethod.Patch, $"v2/servers/{resolvedServerId}/members/display-names", body: new { accNicknames }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedServerId}/members/display-names", body: new { accNicknames }, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setMemberPermissionsV2(IReadOnlyList<MemberPermissionV2Change> userPerms, int? serverId = null, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(serverId);
-        return RequestAsync(HttpMethod.Patch, $"v2/servers/{resolvedServerId}/members/permissions", body: new { userPerms }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedServerId}/members/permissions", body: new { userPerms }, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> getServerSubscriptionFromIpV2(CancellationToken cancellationToken = default) =>

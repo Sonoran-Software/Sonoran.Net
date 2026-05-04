@@ -14,9 +14,17 @@ public sealed partial class SonoranClient : IDisposable
     private const int CadV2RateLimitDefaultDelayMs = 1000;
     private const int CadV2RateLimitMaxDelayMs = 10000;
 
+    private static readonly HttpMethod PatchMethod = new("PATCH");
+
     private static readonly JsonSerializerSettings SerializerSettings = new()
     {
-        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new CamelCaseNamingStrategy
+            {
+                OverrideSpecifiedNames = false
+            }
+        },
         NullValueHandling = NullValueHandling.Ignore
     };
 
@@ -343,7 +351,7 @@ public sealed partial class SonoranClient : IDisposable
         var node = JObject.FromObject(value, JsonSerializer.Create(SerializerSettings));
         foreach (var propertyName in propertyNames)
         {
-            var jsonName = char.ToLowerInvariant(propertyName[0]) + propertyName[1..];
+            var jsonName = char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
             node.Remove(jsonName);
         }
         return node;

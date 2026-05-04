@@ -54,13 +54,13 @@ public sealed partial class SonoranClient
         RequestAsync(HttpMethod.Post, $"v2/community/accounts/{EncodePathSegment(accountId)}/identifiers", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setAccountNameV2(string accountId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/accounts/{EncodePathSegment(accountId)}/name", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/accounts/{EncodePathSegment(accountId)}/name", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setAccountRanksV2(string accountId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/accounts/{EncodePathSegment(accountId)}/ranks", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/accounts/{EncodePathSegment(accountId)}/ranks", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> editProfileFieldsV2(string accountId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/accounts/{EncodePathSegment(accountId)}/profile-fields", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/accounts/{EncodePathSegment(accountId)}/profile-fields", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> clockAccountV2(string accountId, object request, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Post, $"v2/community/accounts/{EncodePathSegment(accountId)}/clock", body: request, cancellationToken: cancellationToken);
@@ -92,13 +92,13 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> setAceConfigV2(int serverId, object request, CancellationToken cancellationToken = default)
     {
         AssertPositiveInteger(serverId, nameof(serverId));
-        return RequestAsync(HttpMethod.Patch, $"v2/community/servers/{serverId}/ace-config", body: request, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/community/servers/{serverId}/ace-config", body: request, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setServerTypeV2(int serverId, object request, CancellationToken cancellationToken = default)
     {
         AssertPositiveInteger(serverId, nameof(serverId));
-        return RequestAsync(HttpMethod.Patch, $"v2/community/servers/{serverId}/type", body: request, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/community/servers/{serverId}/type", body: request, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> verifyWhitelistV2(int serverId, object request, CancellationToken cancellationToken = default)
@@ -129,7 +129,7 @@ public sealed partial class SonoranClient
         RequestAsync(HttpMethod.Post, $"v2/community/events/{EncodePathSegment(eventId)}/rsvps", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> changeFormStageV2(string formId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/forms/{EncodePathSegment(formId)}/stage", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/forms/{EncodePathSegment(formId)}/stage", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> getFormSubmissionsV2(string templateId, object? query = null, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, $"v2/community/forms/{EncodePathSegment(templateId)}/submissions", query: ToQueryDictionary(query), cancellationToken: cancellationToken);
@@ -138,7 +138,7 @@ public sealed partial class SonoranClient
         RequestAsync(HttpMethod.Get, $"v2/community/forms/{EncodePathSegment(templateId)}/lock", cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setFormLockV2(string templateId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/forms/{EncodePathSegment(templateId)}/lock", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/forms/{EncodePathSegment(templateId)}/lock", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> getSubmissionV2(string submissionId, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, $"v2/community/forms/submissions/{EncodePathSegment(submissionId)}", cancellationToken: cancellationToken);
@@ -156,13 +156,13 @@ public sealed partial class SonoranClient
         RequestAsync(HttpMethod.Post, $"v2/community/disciplinary/accounts/{EncodePathSegment(accountId)}/records", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setDisciplinaryRecordPointsV2(string recordId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/disciplinary/records/{EncodePathSegment(recordId)}/points", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/disciplinary/records/{EncodePathSegment(recordId)}/points", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setDisciplinaryRecordReasonV2(string recordId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/disciplinary/records/{EncodePathSegment(recordId)}/reason", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/disciplinary/records/{EncodePathSegment(recordId)}/reason", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setDisciplinaryRecordStatusV2(string recordId, object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, $"v2/community/disciplinary/records/{EncodePathSegment(recordId)}/status", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, $"v2/community/disciplinary/records/{EncodePathSegment(recordId)}/status", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> getOnlinePlayersV2(object? query = null, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, "v2/community/erlc/players/online", query: ToQueryDictionary(query), cancellationToken: cancellationToken);
@@ -189,7 +189,7 @@ public sealed partial class SonoranClient
         RequestAsync(HttpMethod.Post, "v2/community/sessions", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> stopSessionV2(object request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, "v2/community/sessions", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, "v2/community/sessions", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> cancelSessionV2(object request, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Delete, "v2/community/sessions", body: request, cancellationToken: cancellationToken);

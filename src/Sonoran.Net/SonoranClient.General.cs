@@ -47,7 +47,7 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> updateRecordV2(int recordId, UpdateRecordV2Request request, CancellationToken cancellationToken = default)
     {
         AssertPositiveInteger(recordId, nameof(recordId));
-        return RequestAsync(HttpMethod.Patch, $"v2/general/records/{recordId}", body: request, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/general/records/{recordId}", body: request, cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> removeRecordV2(int recordId, CancellationToken cancellationToken = default)
@@ -81,7 +81,7 @@ public sealed partial class SonoranClient
         RequestAsync(HttpMethod.Post, "v2/general/links/check", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> setAccountPermissionsV2(SetAccountPermissionsV2Request request, CancellationToken cancellationToken = default) =>
-        RequestAsync(HttpMethod.Patch, "v2/general/accounts/permissions", body: request, cancellationToken: cancellationToken);
+        RequestAsync(PatchMethod, "v2/general/accounts/permissions", body: request, cancellationToken: cancellationToken);
 
     public Task<SonoranResponse> heartbeatV2(int? serverId, int playerCount, CancellationToken cancellationToken = default)
     {
