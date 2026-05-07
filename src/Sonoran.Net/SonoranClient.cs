@@ -337,6 +337,27 @@ public sealed partial class SonoranClient : IDisposable
         return resolvedServerId;
     }
 
+    private string ResolveRadioCommunityId(string? communityId = null, int? serverId = null)
+    {
+        if (!string.IsNullOrWhiteSpace(communityId))
+        {
+            return communityId;
+        }
+
+        if (serverId is not null)
+        {
+            AssertPositiveInteger(serverId.Value, nameof(serverId));
+            return serverId.Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        if (!string.IsNullOrWhiteSpace(Options.communityId))
+        {
+            return Options.communityId;
+        }
+
+        return ResolveServerId(null).ToString(CultureInfo.InvariantCulture);
+    }
+
     private static void AssertPositiveInteger(int value, string name)
     {
         if (value < 1)

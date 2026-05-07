@@ -50,7 +50,7 @@ var options = new SonoranClientOptions
 | `apiKey` | API key used for authenticated requests. |
 | `communityId` | Community identifier for your integration. |
 | `apiUrl` | Optional API base URL override. |
-| `defaultServerId` | Server ID used when a method accepts an optional `serverId`. |
+| `defaultServerId` | Default numeric server ID for CAD/CMS helpers that use server-scoped routes. Radio v2 helpers resolve the community route from `communityId`. |
 | `timeout` | HTTP request timeout. |
 | `headers` | Optional custom headers added to each request. |
 
@@ -253,19 +253,20 @@ Radio methods are available through `sonoran.Radio`.
 
 | Method |
 | --- |
-| `getCommunityChannelsV2(int? serverId = null, CancellationToken cancellationToken = default)` |
-| `getConnectedUsersV2(int? serverId = null, CancellationToken cancellationToken = default)` |
-| `getConnectedUserV2(int roomId, string identity, int? serverId = null, CancellationToken cancellationToken = default)` |
-| `setUserChannelsV2(int roomId, string identity, object? options = null, int? serverId = null, CancellationToken cancellationToken = default)` |
+| `getCommunityChannelsV2(string? communityId = null, CancellationToken cancellationToken = default)` |
+| `getConnectedUsersV2(string? communityId = null, CancellationToken cancellationToken = default)` |
+| `getMembersV2(GetMembersV2Query? query = null, CancellationToken cancellationToken = default)` |
+| `getConnectedUserV2(int roomId, string identity, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `setUserChannelsV2(int roomId, string identity, object? options = null, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `setUserDisplayNameV2(SetUserDisplayNameV2Request request, CancellationToken cancellationToken = default)` |
-| `approveMembersV2(IReadOnlyList<string> accIds, int? serverId = null, CancellationToken cancellationToken = default)` |
-| `kickMembersV2(IReadOnlyList<string> accIds, int? serverId = null, CancellationToken cancellationToken = default)` |
-| `banMembersV2(IReadOnlyList<string> accIds, int? serverId = null, CancellationToken cancellationToken = default)` |
-| `setMemberDisplayNamesV2(IReadOnlyList<MemberDisplayNameV2Change> accNicknames, int? serverId = null, CancellationToken cancellationToken = default)` |
-| `setMemberPermissionsV2(IReadOnlyList<MemberPermissionV2Change> userPerms, int? serverId = null, CancellationToken cancellationToken = default)` |
+| `approveMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `kickMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `banMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `setMemberDisplayNamesV2(IReadOnlyList<MemberDisplayNameV2Change> accNicknames, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `setMemberPermissionsV2(IReadOnlyList<MemberPermissionV2Change> userPerms, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `getServerSubscriptionFromIpV2(CancellationToken cancellationToken = default)` |
 | `setServerIpV2(SetServerIpV2Request request, CancellationToken cancellationToken = default)` |
-| `setInGameSpeakerLocationsV2(IReadOnlyList<object?> locations, int? serverId = null, CancellationToken cancellationToken = default)` |
+| `setInGameSpeakerLocationsV2(IReadOnlyList<object?> locations, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `playToneV2(PlayToneV2Request request, CancellationToken cancellationToken = default)` |
 
 ## Notes

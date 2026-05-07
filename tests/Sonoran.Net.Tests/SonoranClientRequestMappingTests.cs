@@ -377,11 +377,31 @@ public sealed class SonoranClientRequestMappingTests
         handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
 
         using var client = CreateRadioClient(handler);
-        _ = await client.Radio.getConnectedUsersV2(9);
+        _ = await client.Radio.getConnectedUsersV2("9");
 
         var request = Assert.Single(handler.Requests);
         Assert.Equal("https://api.sonoranradio.com/v2/servers/9/connected-users", GetEscapedUrl(request));
         Assert.Equal("Bearer radio-key", request.Headers.Authorization?.ToString());
+    }
+
+    [Fact]
+    public async Task RadioGetMembersV2_UsesTypedQuerySerialization()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.getMembersV2(new GetMembersV2Query
+        {
+            CommunityId = "radio-community",
+            Page = 1,
+            PerPage = 25,
+            Status = "approved",
+            Search = "dispatch"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonoranradio.com/v2/servers/radio-community/members?page=1&perPage=25&search=dispatch&status=approved", GetEscapedUrl(request));
     }
 
     [Fact]
