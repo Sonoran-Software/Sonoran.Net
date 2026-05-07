@@ -25,7 +25,9 @@ public sealed partial class SonoranClient : IDisposable
                 OverrideSpecifiedNames = false
             }
         },
-        NullValueHandling = NullValueHandling.Ignore
+        NullValueHandling = NullValueHandling.Ignore,
+        // https://github.com/advisories/GHSA-5crp-9r3c-p9vr
+        MaxDepth = 128
     };
 
     private readonly HttpClient _httpClient;
