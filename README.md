@@ -47,13 +47,19 @@ var options = new SonoranClientOptions
 For Sonoran Radio, set the public community ID on `communityId` and the default room on `roomId` when creating the client:
 
 ```csharp
-using var radio = new SonoranClient(new SonoranClientOptions
+using var client = new SonoranClient(new SonoranClientOptions
 {
     product = SonoranProduct.RADIO,
     apiKey = "your-radio-api-key",
     communityId = "your-community-id",
-    roomId = 1
+    roomId = 2
 });
+```
+
+You can update the Radio room used by later room-scoped requests without creating a new client:
+
+```csharp
+client.setRoomId(1);
 ```
 
 | Property | Description |

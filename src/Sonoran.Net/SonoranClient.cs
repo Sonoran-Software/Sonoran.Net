@@ -100,6 +100,12 @@ public sealed partial class SonoranClient : IDisposable
     public SonoranCmsClient Cms { get; }
     public SonoranRadioClient Radio { get; }
 
+    public void setRoomId(int roomId)
+    {
+        AssertPositiveInteger(roomId, nameof(roomId));
+        Options.roomId = roomId;
+    }
+
     public void Dispose()
     {
         if (_ownsHttpClient)

@@ -201,7 +201,7 @@ public sealed class SonoranClientRequestMappingTests
 
         var request = Assert.Single(handler.Requests);
         Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/7/stations", GetEscapedUrl(request));
-        Assert.Equal("""{"locations":[{"name":"Mission Row","coordinates":{"x":425.1,"y":-979.2,"z":30.7,"w":0},"doors":["bay_1","bay_2"],"icon":"fas fa-building"}],"tones":["tone_station_open.mp3"],"unitColors":["#2563eb","#ef4444"]}""", await request.Content!.ReadAsStringAsync());
+        Assert.Equal("""{"locations":[{"name":"Mission Row","coordinates":{"x":425.1,"y":-979.2,"z":30.7,"w":0.0},"doors":["bay_1","bay_2"],"icon":"fas fa-building"}],"tones":["tone_station_open.mp3"],"unitColors":["#2563eb","#ef4444"]}""", await request.Content!.ReadAsStringAsync());
     }
 
     [Fact]
@@ -438,6 +438,44 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task SetRoomId_UpdatesRoomScopedRadioPaths()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        client.setRoomId(7);
+        _ = await client.Radio.getConnectedUserV2("user-1");
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonoranradio.com/v2/servers/radio-community/rooms/7/users/user-1", GetEscapedUrl(request));
+    }
+
+    [Fact]
+    public async Task SetRoomId_UpdatesRadioRequestBodies()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        client.setRoomId(7);
+        _ = await client.Radio.approveMembersV2(["user-1"]);
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("""{"roomId":7,"accIds":["user-1"]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public void SetRoomId_RequiresPositiveRoomId()
+    {
+        using var client = CreateRadioClient(new RecordingHandler());
+
+        var exception = Assert.Throws<ArgumentException>(() => client.setRoomId(0));
+
+        Assert.Equal("roomId must be a positive integer. (Parameter 'roomId')", exception.Message);
+    }
+
+    [Fact]
     public async Task RadioPlayToneV2_AddsConfiguredRoomId()
     {
         var handler = new RecordingHandler();
@@ -486,12 +524,12 @@ public sealed class SonoranClientRequestMappingTests
     {
         var exception = Assert.Throws<NotSupportedException>(() => new SonoranClient(new SonoranClientOptions
         {
-            product = SonoranProduct.CMS,
+            product = (SonoranProduct)999,
             apiKey = "test-key",
             communityId = "community-123"
         }));
 
-        Assert.Equal("product is required when instancing. (Parameter 'options')", exception.Message);
+        Assert.Equal("Only SonoranProduct.CAD, SonoranProduct.CMS, and SonoranProduct.RADIO are currently supported in Sonoran.Net.", exception.Message);
     }
 
     private static SonoranClient CreateClient(RecordingHandler handler, List<TimeSpan>? delays = null)
