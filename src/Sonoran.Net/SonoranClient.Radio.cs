@@ -45,43 +45,43 @@ public sealed partial class SonoranClient
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
         var roomId = ResolveRadioRoomId();
-        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/rooms/{roomId}/users/{EncodePathSegment(identity)}/channels", body: options ?? new { }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/rooms/{roomId}/users/{EncodePathSegment(identity)}/channels", body: WithRadioRoomId(options ?? new { }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setUserDisplayNameV2(SetUserDisplayNameV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(request.CommunityId);
-        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/users/display-name", body: WithoutKeys(request, nameof(request.CommunityId)), cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/users/display-name", body: WithRadioRoomId(WithoutKeys(request, nameof(request.CommunityId))), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> approveMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
-        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/approve", body: new { accIds }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/approve", body: WithRadioRoomId(new { accIds }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> kickMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
-        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/kick", body: new { accIds }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/kick", body: WithRadioRoomId(new { accIds }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> banMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
-        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/ban", body: new { accIds }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/ban", body: WithRadioRoomId(new { accIds }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setMemberDisplayNamesV2(IReadOnlyList<MemberDisplayNameV2Change> accNicknames, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
-        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/members/display-names", body: new { accNicknames }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/members/display-names", body: WithRadioRoomId(new { accNicknames }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> setMemberPermissionsV2(IReadOnlyList<MemberPermissionV2Change> userPerms, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
-        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/members/permissions", body: new { userPerms }, cancellationToken: cancellationToken);
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/members/permissions", body: WithRadioRoomId(new { userPerms }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> getServerSubscriptionFromIpV2(CancellationToken cancellationToken = default) =>
@@ -97,7 +97,7 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> setInGameSpeakerLocationsV2(IReadOnlyList<object?> locations, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);
-        return RequestAsync(HttpMethod.Put, $"v2/servers/{resolvedCommunityId}/speakers", body: new { locations }, cancellationToken: cancellationToken);
+        return RequestAsync(HttpMethod.Put, $"v2/servers/{resolvedCommunityId}/speakers", body: WithRadioRoomId(new { locations }), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> playToneV2(PlayToneV2Request request, CancellationToken cancellationToken = default)
@@ -115,6 +115,11 @@ public sealed partial class SonoranClient
         };
         foreach (var property in JObject.FromObject(value, JsonSerializer.Create(SerializerSettings)).Properties())
         {
+            if (string.Equals(property.Name, "roomId", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
             node.Add(property.Name, property.Value.DeepClone());
         }
 
