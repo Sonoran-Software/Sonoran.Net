@@ -53,25 +53,30 @@ public sealed partial class SonoranClient : IDisposable
             throw new NotSupportedException("Only SonoranProduct.CAD, SonoranProduct.CMS, and SonoranProduct.RADIO are currently supported in Sonoran.Net.");
         }
 
-        // Thanks to FiveM's Mono, we have to do certificate validation ourselves
-        ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+        bool httpClientProvided = httpClient != null;
+
+        if (!httpClientProvided)
         {
-            if (DateTime.Parse(cert!.GetExpirationDateString()) < DateTime.Now)
+            // Thanks to FiveM's Mono, we have to do certificate validation ourselves
+            ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
             {
-                throw new HttpRequestException($"Certificate expired: {cert.GetExpirationDateString()}");
-            }
+                if (DateTime.Parse(cert!.GetExpirationDateString()) < DateTime.Now)
+                {
+                    throw new HttpRequestException($"Certificate expired: {cert.GetExpirationDateString()}");
+                }
 
-            string? commonName = ExtractCommonName(cert.Subject);
+                string? commonName = ExtractCommonName(cert.Subject);
 
-            if (string.IsNullOrEmpty(commonName) || !AllowedCommonNames.ContainsValue(commonName!))
-            {
-                throw new HttpRequestException("Certificate subject mismatch");
-            }
+                if (string.IsNullOrEmpty(commonName) || !AllowedCommonNames.ContainsValue(commonName!))
+                {
+                    throw new HttpRequestException("Certificate subject mismatch");
+                }
 
-            return true;
-        };
+                return true;
+            };
+        }
 
-        _httpClient = httpClient ?? new HttpClient();
+        _httpClient = httpClientProvided ? httpClient! : new HttpClient();
         _ownsHttpClient = httpClient is null;
         _httpClient.Timeout = options.timeout;
         _delay = delay ?? Task.Delay;
