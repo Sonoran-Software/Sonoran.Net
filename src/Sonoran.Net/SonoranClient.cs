@@ -342,17 +342,11 @@ public sealed partial class SonoranClient : IDisposable
         return resolvedServerId;
     }
 
-    private string ResolveRadioCommunityId(string? communityId = null, int? serverId = null)
+    private string ResolveRadioCommunityId(string? communityId = null)
     {
         if (!string.IsNullOrWhiteSpace(communityId))
         {
             return communityId;
-        }
-
-        if (serverId is not null)
-        {
-            AssertPositiveInteger(serverId.Value, nameof(serverId));
-            return serverId.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         if (!string.IsNullOrWhiteSpace(Options.communityId))
@@ -360,7 +354,18 @@ public sealed partial class SonoranClient : IDisposable
             return Options.communityId;
         }
 
-        return ResolveServerId(null).ToString(CultureInfo.InvariantCulture);
+        throw new InvalidOperationException("communityId is required for Radio v2 requests.");
+    }
+
+    private int ResolveRadioRoomId()
+    {
+        if (Options.roomId is null)
+        {
+            throw new InvalidOperationException("roomId is required for Radio v2 room-scoped requests.");
+        }
+
+        AssertPositiveInteger(Options.roomId.Value, nameof(Options.roomId));
+        return Options.roomId.Value;
     }
 
     private static void AssertPositiveInteger(int value, string name)

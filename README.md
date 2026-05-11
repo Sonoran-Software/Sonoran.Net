@@ -44,11 +44,24 @@ var options = new SonoranClientOptions
 };
 ```
 
+For Sonoran Radio, set the public community ID on `communityId` and the default room on `roomId` when creating the client:
+
+```csharp
+using var radio = new SonoranClient(new SonoranClientOptions
+{
+    product = SonoranProduct.RADIO,
+    apiKey = "your-radio-api-key",
+    communityId = "your-community-id",
+    roomId = 1
+});
+```
+
 | Property | Description |
 | --- | --- |
 | `product` | API product to use: `CAD`, `CMS`, or `RADIO`. |
 | `apiKey` | API key used for authenticated requests. |
-| `communityId` | Community identifier for your integration. |
+| `communityId` | Community identifier for your integration. Required for Radio v2 helpers unless supplied on an individual radio request. |
+| `roomId` | Default Radio room ID for room-scoped Radio v2 helpers and request bodies. |
 | `apiUrl` | Optional API base URL override. |
 | `defaultServerId` | Default numeric server ID for CAD/CMS helpers that use server-scoped routes. Radio v2 helpers resolve the community route from `communityId`. |
 | `timeout` | HTTP request timeout. |
@@ -256,8 +269,8 @@ Radio methods are available through `sonoran.Radio`.
 | `getCommunityChannelsV2(string? communityId = null, CancellationToken cancellationToken = default)` |
 | `getConnectedUsersV2(string? communityId = null, CancellationToken cancellationToken = default)` |
 | `getMembersV2(GetMembersV2Query? query = null, CancellationToken cancellationToken = default)` |
-| `getConnectedUserV2(int roomId, string identity, string? communityId = null, CancellationToken cancellationToken = default)` |
-| `setUserChannelsV2(int roomId, string identity, object? options = null, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `getConnectedUserV2(string identity, string? communityId = null, CancellationToken cancellationToken = default)` |
+| `setUserChannelsV2(string identity, object? options = null, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `setUserDisplayNameV2(SetUserDisplayNameV2Request request, CancellationToken cancellationToken = default)` |
 | `approveMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `kickMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)` |

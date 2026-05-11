@@ -18,11 +18,11 @@ public sealed class SonoranRadioClient
     public Task<SonoranResponse> getMembersV2(GetMembersV2Query? query = null, CancellationToken cancellationToken = default) =>
         _client.getMembersV2(query, cancellationToken);
 
-    public Task<SonoranResponse> getConnectedUserV2(int roomId, string identity, string? communityId = null, CancellationToken cancellationToken = default) =>
-        _client.getConnectedUserV2(roomId, identity, communityId, cancellationToken);
+    public Task<SonoranResponse> getConnectedUserV2(string identity, string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.getConnectedUserV2(identity, communityId, cancellationToken);
 
-    public Task<SonoranResponse> setUserChannelsV2(int roomId, string identity, object? options = null, string? communityId = null, CancellationToken cancellationToken = default) =>
-        _client.setUserChannelsV2(roomId, identity, options, communityId, cancellationToken);
+    public Task<SonoranResponse> setUserChannelsV2(string identity, object? options = null, string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.setUserChannelsV2(identity, options, communityId, cancellationToken);
 
     public Task<SonoranResponse> setUserDisplayNameV2(SetUserDisplayNameV2Request request, CancellationToken cancellationToken = default) =>
         _client.setUserDisplayNameV2(request, cancellationToken);

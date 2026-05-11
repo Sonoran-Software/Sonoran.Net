@@ -8,6 +8,8 @@ public sealed class SonoranClientOptions
 
     public string? communityId { get; init; }
 
+    public int? roomId { get; init; }
+
     public string? apiUrl { get; init; }
 
     public int defaultServerId { get; init; } = 1;
