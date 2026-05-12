@@ -10,6 +10,8 @@ public sealed class SonoranClientOptions
 
     public int? roomId { get; set; }
 
+    public int? radioRoomId { get; init; }
+
     public string? apiUrl { get; init; }
 
     public int defaultServerId { get; init; } = 1;

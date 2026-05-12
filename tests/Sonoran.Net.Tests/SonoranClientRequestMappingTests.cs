@@ -494,6 +494,23 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task RadioPlayToneV2_AcceptsRadioRoomIdAlias()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+        using var client = CreateRadioClient(handler, roomId: null, radioRoomId: 9);
+
+        _ = await client.Radio.playToneV2(new PlayToneV2Request
+        {
+            Tones = [12],
+            PlayTo = [new { type = "channel", value = 101 }]
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("""{"roomId":9,"tones":[12],"playTo":[{"type":"channel","value":101}]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task RadioPayloadV2Methods_AddConfiguredRoomId()
     {
         var handler = new RecordingHandler();
@@ -554,7 +571,7 @@ public sealed class SonoranClientRequestMappingTests
         });
     }
 
-    private static SonoranClient CreateRadioClient(RecordingHandler handler)
+    private static SonoranClient CreateRadioClient(RecordingHandler handler, int? roomId = 2, int? radioRoomId = null)
     {
         var httpClient = new HttpClient(handler);
         return new SonoranClient(new SonoranClientOptions
@@ -562,7 +579,8 @@ public sealed class SonoranClientRequestMappingTests
             product = SonoranProduct.RADIO,
             apiKey = "radio-key",
             communityId = "radio-community",
-            roomId = 2,
+            roomId = roomId,
+            radioRoomId = radioRoomId,
             apiUrl = "https://api.sonoranradio.com/",
             defaultServerId = 3,
             timeout = TimeSpan.FromMilliseconds(12345),
