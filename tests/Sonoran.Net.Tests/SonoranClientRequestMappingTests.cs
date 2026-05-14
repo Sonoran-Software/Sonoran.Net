@@ -248,6 +248,45 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task SetPagerConfigV2_UsesBackendConfigShape()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.setPagerConfigV2(new SetPagerConfigV2Request
+        {
+            ServerId = 7,
+            NatureWords = new Dictionary<string, string>
+            {
+                ["Emergency"] = "Emergency",
+                ["NonEmergency"] = "Non-Emergency",
+                ["Administrative"] = "Administrative"
+            },
+            MaxAddresses = 5,
+            MaxBodyLength = 250,
+            Nodes =
+            [
+                new PagerNodeV2
+                {
+                    Id = "root-1",
+                    Name = "Fire",
+                    Description = "Fire services",
+                    Permission = "fire",
+                    Address = "FIRE-01",
+                    ShortCode = "F1",
+                    Kind = "group",
+                    Children = []
+                }
+            ]
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/7/pager-config", GetEscapedUrl(request));
+        Assert.Equal("""{"natureWords":{"Emergency":"Emergency","NonEmergency":"Non-Emergency","Administrative":"Administrative"},"maxAddresses":5,"maxBodyLength":250,"nodes":[{"id":"root-1","name":"Fire","description":"Fire services","permission":"fire","address":"FIRE-01","shortCode":"F1","kind":"group","children":[]}]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task GetAccountUnitsV2_UsesPathAndQuery()
     {
         var handler = new RecordingHandler();

@@ -327,24 +327,22 @@ public sealed record AvailableCalloutUnitsRequiredV2
     public bool? AmbulanceRequired { get; init; }
 }
 
-public sealed record PagerNatureWordV2
-{
-    public string Label { get; init; } = string.Empty;
-    public int Weight { get; init; }
-}
-
 public sealed record PagerNodeV2
 {
-    public string Label { get; init; } = string.Empty;
-    public string? Department { get; init; }
-    public string? Subdivision { get; init; }
-    public IReadOnlyList<string>? Tones { get; init; }
+    public string Id { get; init; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
+    public string? Description { get; init; }
+    public string? Permission { get; init; }
+    public string? Address { get; init; }
+    public string? ShortCode { get; init; }
+    public string? Kind { get; init; }
+    public IReadOnlyList<PagerNodeV2>? Children { get; init; }
 }
 
 public sealed record SetPagerConfigV2Request
 {
     public int? ServerId { get; init; }
-    public IReadOnlyList<PagerNatureWordV2> NatureWords { get; init; } = [];
+    public IReadOnlyDictionary<string, string> NatureWords { get; init; } = new Dictionary<string, string>();
     public int MaxAddresses { get; init; }
     public int MaxBodyLength { get; init; }
     public IReadOnlyList<PagerNodeV2>? Nodes { get; init; }
