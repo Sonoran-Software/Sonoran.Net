@@ -72,6 +72,12 @@ public sealed partial class SonoranClient
         return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/ban", body: WithRadioRoomId(new { accIds }), cancellationToken: cancellationToken);
     }
 
+    public Task<SonoranResponse> unbanMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default)
+    {
+        var resolvedCommunityId = ResolveRadioCommunityId(communityId);
+        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/members/unban", body: WithRadioRoomId(new { accIds }), cancellationToken: cancellationToken);
+    }
+
     public Task<SonoranResponse> setMemberDisplayNamesV2(IReadOnlyList<MemberDisplayNameV2Change> accNicknames, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);

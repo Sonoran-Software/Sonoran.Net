@@ -36,6 +36,9 @@ public sealed class SonoranRadioClient
     public Task<SonoranResponse> banMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default) =>
         _client.banMembersV2(accIds, communityId, cancellationToken);
 
+    public Task<SonoranResponse> unbanMembersV2(IReadOnlyList<string> accIds, string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.unbanMembersV2(accIds, communityId, cancellationToken);
+
     public Task<SonoranResponse> setMemberDisplayNamesV2(IReadOnlyList<MemberDisplayNameV2Change> accNicknames, string? communityId = null, CancellationToken cancellationToken = default) =>
         _client.setMemberDisplayNamesV2(accNicknames, communityId, cancellationToken);
 

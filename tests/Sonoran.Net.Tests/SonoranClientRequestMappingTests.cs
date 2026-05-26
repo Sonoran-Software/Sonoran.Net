@@ -564,6 +564,20 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task RadioUnbanMembersV2_UsesExpectedEndpoint()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.unbanMembersV2(["user-1"]);
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonoranradio.com/v2/servers/radio-community/members/unban", GetEscapedUrl(request));
+        Assert.Equal("""{"roomId":2,"accIds":["user-1"]}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public void Constructor_RequiresProduct()
     {
         var exception = Assert.Throws<ArgumentException>(() => new SonoranClient(new SonoranClientOptions
