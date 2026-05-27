@@ -202,6 +202,8 @@ CAD methods are available through `sonoran.Cad`.
 | `updateBlipV2(int blipId, UpdateBlipV2Request request, CancellationToken cancellationToken = default)` |
 | `deleteBlipsV2(IReadOnlyList<int> ids, int? serverId = null, CancellationToken cancellationToken = default)` |
 
+Account-targeted CAD v2 request models accept `AccountUuid`, `CommunityUserId`, `Roblox`, `Discord`, and legacy `ApiId` where supported by the backend.
+
 ## CMS Methods
 
 CMS methods are available through `sonoran.Cms`.

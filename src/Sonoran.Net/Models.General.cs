@@ -22,6 +22,7 @@ public sealed record ApplyPermissionKeyV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string PermissionKey { get; init; } = string.Empty;
 }
 
@@ -35,6 +36,7 @@ public sealed record BanUserV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public bool? IsBan { get; init; }
     public bool? IsKick { get; init; }
 }
@@ -53,6 +55,14 @@ public sealed record SetApiIdsV2Request
 {
     public string? Username { get; init; }
     public string? AccountUuid { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
+    public string? ApiId { get; init; }
+    [JsonProperty("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public IReadOnlyList<string> ApiIds { get; init; } = [];
     public string? SessionId { get; init; }
     public bool? PushNew { get; init; }
@@ -68,6 +78,7 @@ public sealed record CreateRecordV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string? User { get; init; }
     public bool? UseDictionary { get; init; }
     public int? RecordTypeId { get; init; }
@@ -85,6 +96,7 @@ public sealed record UpdateRecordV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string? User { get; init; }
     public bool? UseDictionary { get; init; }
     public int? RecordTypeId { get; init; }
@@ -104,6 +116,7 @@ public sealed record SendRecordDraftV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
 }
 
 public sealed record LookupV2Request
@@ -116,6 +129,7 @@ public sealed record LookupV2Request
     [JsonProperty("notifyCommunityUserId")]
     public string? SerializedNotifyCommunityUserId => NotifyCommunityUserId ?? NotifyApiId;
     public long? NotifyRoblox { get; init; }
+    public string? NotifyDiscord { get; init; }
     public IReadOnlyList<int> Types { get; init; } = [];
     public string? First { get; init; }
     public string? Last { get; init; }
@@ -142,6 +156,7 @@ public sealed record LookupByValueV2Request
     [JsonProperty("notifyCommunityUserId")]
     public string? SerializedNotifyCommunityUserId => NotifyCommunityUserId ?? NotifyApiId;
     public long? NotifyRoblox { get; init; }
+    public string? NotifyDiscord { get; init; }
 }
 
 public sealed record LookupCustomV2Request
@@ -164,6 +179,7 @@ public sealed record GetAccountV2Query
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string? Username { get; init; }
 }
 
@@ -190,6 +206,7 @@ public sealed record SetAccountPermissionsV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public IReadOnlyList<string>? Add { get; init; }
     public IReadOnlyList<string>? Remove { get; init; }
 }
@@ -218,6 +235,7 @@ public sealed record SendPhotoV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string Url { get; init; } = string.Empty;
 }
 
@@ -229,6 +247,8 @@ public sealed record UploadBodycamRecordingV2Request
     [JsonIgnore]
     public string? ApiId { get; init; }
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public long DurationMs { get; init; }
     public int? IdentId { get; init; }
     public string? UnitNumber { get; init; }

@@ -134,6 +134,14 @@ public sealed partial class SonoranClient
             {
                 content.Add(new StringContent(request.SerializedCommunityUserId), "communityUserId");
             }
+            if (request.Roblox.HasValue)
+            {
+                content.Add(new StringContent(request.Roblox.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)), "roblox");
+            }
+            if (!string.IsNullOrWhiteSpace(request.Discord))
+            {
+                content.Add(new StringContent(request.Discord), "discord");
+            }
 
             content.Add(new StringContent(request.DurationMs.ToString(System.Globalization.CultureInfo.InvariantCulture)), "durationMs");
 

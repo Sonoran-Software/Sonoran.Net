@@ -29,6 +29,7 @@ public sealed record UnitLocationUpdateV2
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string? Location { get; init; }
     public double? X { get; init; }
     public double? Y { get; init; }
@@ -59,6 +60,7 @@ public sealed record SetUnitPanicV2Request
     [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
     public bool IsPanic { get; init; }
 }
@@ -80,6 +82,7 @@ public sealed record SetUnitStatusV2Request
     [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
     public int Status { get; init; }
 }
@@ -94,6 +97,7 @@ public sealed record KickUnitV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public string Reason { get; init; } = string.Empty;
 }
 
@@ -137,6 +141,7 @@ public sealed record AddIdentifiersToGroupV2Request
     [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
 }
 
@@ -187,6 +192,7 @@ public sealed record CreateDispatchCallV2Request
     [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public Dictionary<string, string>? MetaData { get; init; }
     public int? DeleteAfterMinutes { get; init; }
 }
@@ -225,6 +231,7 @@ public sealed record DispatchAttachmentV2Request
     [JsonProperty("communityUserIds")]
     public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
     public IReadOnlyList<string>? Accounts { get; init; }
     public IReadOnlyList<int>? IdentIds { get; init; }
 }

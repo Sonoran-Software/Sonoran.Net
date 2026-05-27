@@ -316,7 +316,7 @@ public sealed class SonoranClientRequestMappingTests
         using var client = CreateClient(handler);
         _ = await client.Cad.uploadBodycamRecordingV2(new UploadBodycamRecordingV2Request
         {
-            ApiId = "1",
+            Discord = "123456789012345678",
             DurationMs = 90000,
             IdentId = 123,
             UnitNumber = "1A-12",
@@ -333,7 +333,8 @@ public sealed class SonoranClientRequestMappingTests
         Assert.Equal("multipart/form-data", request.Content!.Headers.ContentType?.MediaType);
 
         var body = await request.Content.ReadAsStringAsync();
-        Assert.Contains("name=communityUserId", body);
+        Assert.Contains("name=discord", body);
+        Assert.Contains("123456789012345678", body);
         Assert.Contains("name=file; filename=bodycam-clip.webm", body);
         Assert.Contains("webm-data", body);
     }

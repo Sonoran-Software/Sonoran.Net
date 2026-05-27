@@ -12,6 +12,7 @@ public sealed record GetCharactersV2Query
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
 }
 
 public sealed record SetSelectedCharacterV2Request
@@ -25,6 +26,7 @@ public sealed record SetSelectedCharacterV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
 }
 
 public sealed record GetCharacterLinksV2Query
@@ -37,6 +39,7 @@ public sealed record GetCharacterLinksV2Query
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
 }
 
 public sealed record CharacterLinkTargetV2Request
@@ -49,4 +52,5 @@ public sealed record CharacterLinkTargetV2Request
     [JsonProperty("communityUserId")]
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
+    public string? Discord { get; init; }
 }
