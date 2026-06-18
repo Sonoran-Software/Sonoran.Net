@@ -18,6 +18,9 @@ public sealed class SonoranRadioClient
     public Task<SonoranResponse> getMembersV2(GetMembersV2Query? query = null, CancellationToken cancellationToken = default) =>
         _client.getMembersV2(query, cancellationToken);
 
+    public Task<SonoranResponse> getTransmissionsV2(GetTransmissionsV2Query? query = null, CancellationToken cancellationToken = default) =>
+        _client.getTransmissionsV2(query, cancellationToken);
+
     public Task<SonoranResponse> getConnectedUserV2(string identity, string? communityId = null, CancellationToken cancellationToken = default) =>
         _client.getConnectedUserV2(identity, communityId, cancellationToken);
 

@@ -37,6 +37,13 @@ public sealed record GetMembersV2Query
     public string? Search { get; init; }
 }
 
+public sealed record GetTransmissionsV2Query
+{
+    public string? CommunityId { get; init; }
+    public int? Page { get; init; }
+    public int? PerPage { get; init; }
+}
+
 public sealed record SetServerIpV2Request
 {
     public string? CommunityId { get; init; }

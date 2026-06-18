@@ -34,6 +34,19 @@ public sealed partial class SonoranClient
         return RequestAsync(HttpMethod.Get, $"v2/servers/{resolvedCommunityId}/members", query: ToQueryDictionary(queryData), cancellationToken: cancellationToken);
     }
 
+    public Task<SonoranResponse> getTransmissionsV2(GetTransmissionsV2Query? query = null, CancellationToken cancellationToken = default)
+    {
+        var resolvedCommunityId = ResolveRadioCommunityId(query?.CommunityId);
+        var queryData = query is null
+            ? null
+            : new
+            {
+                query.Page,
+                query.PerPage
+            };
+        return RequestAsync(HttpMethod.Get, $"v2/servers/{resolvedCommunityId}/transmissions", query: ToQueryDictionary(queryData), cancellationToken: cancellationToken);
+    }
+
     public Task<SonoranResponse> getConnectedUserV2(string identity, string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);

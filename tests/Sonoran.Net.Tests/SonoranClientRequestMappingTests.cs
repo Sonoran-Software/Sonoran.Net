@@ -445,6 +445,24 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task RadioGetTransmissionsV2_UsesTypedQuerySerialization()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.getTransmissionsV2(new GetTransmissionsV2Query
+        {
+            CommunityId = "radio-community",
+            Page = 1,
+            PerPage = 25
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonoranradio.com/v2/servers/radio-community/transmissions?page=1&perPage=25", GetEscapedUrl(request));
+    }
+
+    [Fact]
     public async Task RadioSetServerIpV2_AddsConfiguredRoomId()
     {
         var handler = new RecordingHandler();

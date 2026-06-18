@@ -277,6 +277,7 @@ Radio methods are available through `sonoran.Radio`.
 | `getCommunityChannelsV2(string? communityId = null, CancellationToken cancellationToken = default)` |
 | `getConnectedUsersV2(string? communityId = null, CancellationToken cancellationToken = default)` |
 | `getMembersV2(GetMembersV2Query? query = null, CancellationToken cancellationToken = default)` |
+| `getTransmissionsV2(GetTransmissionsV2Query? query = null, CancellationToken cancellationToken = default)` |
 | `getConnectedUserV2(string identity, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `setUserChannelsV2(string identity, object? options = null, string? communityId = null, CancellationToken cancellationToken = default)` |
 | `setUserDisplayNameV2(SetUserDisplayNameV2Request request, CancellationToken cancellationToken = default)` |
