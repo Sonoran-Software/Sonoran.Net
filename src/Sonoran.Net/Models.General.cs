@@ -196,6 +196,13 @@ public sealed record CommunityLinkV2Request
     public string CommunityUserId { get; init; } = string.Empty;
 }
 
+public sealed record SetCommunityLinkV2Request
+{
+    public string AccountUuid { get; init; } = string.Empty;
+    public string SecretUuid { get; init; } = string.Empty;
+    public string CommunityUserId { get; init; } = string.Empty;
+}
+
 public sealed record SetAccountPermissionsV2Request
 {
     public string? AccountUuid { get; init; }

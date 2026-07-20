@@ -80,6 +80,9 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> checkCommunityLinkV2(CommunityLinkV2Request request, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Post, "v2/general/links/check", body: request, cancellationToken: cancellationToken);
 
+    public Task<SonoranResponse> setCommunityLinkV2(SetCommunityLinkV2Request request, CancellationToken cancellationToken = default) =>
+        RequestAsync(HttpMethod.Post, "v2/general/links/set", body: request, cancellationToken: cancellationToken);
+
     public Task<SonoranResponse> setAccountPermissionsV2(SetAccountPermissionsV2Request request, CancellationToken cancellationToken = default) =>
         RequestAsync(PatchMethod, "v2/general/accounts/permissions", body: request, cancellationToken: cancellationToken);
 

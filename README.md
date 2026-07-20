@@ -149,6 +149,7 @@ CAD methods are available through `sonoran.Cad`.
 | `getAccountsV2(GetAccountsV2Query? query = null, CancellationToken cancellationToken = default)` |
 | `createCommunityLinkV2(CommunityLinkV2Request request, CancellationToken cancellationToken = default)` |
 | `checkCommunityLinkV2(CommunityLinkV2Request request, CancellationToken cancellationToken = default)` |
+| `setCommunityLinkV2(SetCommunityLinkV2Request request, CancellationToken cancellationToken = default)` |
 | `setAccountPermissionsV2(SetAccountPermissionsV2Request request, CancellationToken cancellationToken = default)` |
 | `heartbeatV2(int? serverId, int playerCount, CancellationToken cancellationToken = default)` |
 | `getVersionV2(CancellationToken cancellationToken = default)` |

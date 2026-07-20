@@ -63,6 +63,9 @@ public sealed class SonoranCadClient
     public Task<SonoranResponse> checkCommunityLinkV2(CommunityLinkV2Request request, CancellationToken cancellationToken = default) =>
         _client.checkCommunityLinkV2(request, cancellationToken);
 
+    public Task<SonoranResponse> setCommunityLinkV2(SetCommunityLinkV2Request request, CancellationToken cancellationToken = default) =>
+        _client.setCommunityLinkV2(request, cancellationToken);
+
     public Task<SonoranResponse> setAccountPermissionsV2(SetAccountPermissionsV2Request request, CancellationToken cancellationToken = default) =>
         _client.setAccountPermissionsV2(request, cancellationToken);
 

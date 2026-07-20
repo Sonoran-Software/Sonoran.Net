@@ -43,6 +43,26 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task SetCommunityLinkV2_UsesCredentialBody()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"linked":true}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.setCommunityLinkV2(new SetCommunityLinkV2Request
+        {
+            AccountUuid = "account-uuid",
+            SecretUuid = "secret-uuid",
+            CommunityUserId = "fivem:123"
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal(HttpMethod.Post, request.Method);
+        Assert.Equal("https://api.sonorancad.com/v2/general/links/set", GetEscapedUrl(request));
+        Assert.Equal("""{"accountUuid":"account-uuid","secretUuid":"secret-uuid","communityUserId":"fivem:123"}""", await request.Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task GetTurnCredentialsV2_UsesOptionalQuerySerialization()
     {
         var handler = new RecordingHandler();
