@@ -21,6 +21,9 @@ public sealed class SonoranCadClient
     public Task<SonoranResponse> banUserV2(BanUserV2Request request, CancellationToken cancellationToken = default) =>
         _client.banUserV2(request, cancellationToken);
 
+    public Task<SonoranResponse> getPenalCodesV2(CancellationToken cancellationToken = default) =>
+        _client.getPenalCodesV2(cancellationToken);
+
     public Task<SonoranResponse> setPenalCodesV2(IReadOnlyList<PenalCodeV2> codes, CancellationToken cancellationToken = default) =>
         _client.setPenalCodesV2(codes, cancellationToken);
 

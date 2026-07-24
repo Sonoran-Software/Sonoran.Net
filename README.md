@@ -135,6 +135,7 @@ CAD methods are available through `sonoran.Cad`.
 | `checkApiIdV2(string apiId, CancellationToken cancellationToken = default)` |
 | `applyPermissionKeyV2(ApplyPermissionKeyV2Request request, CancellationToken cancellationToken = default)` |
 | `banUserV2(BanUserV2Request request, CancellationToken cancellationToken = default)` |
+| `getPenalCodesV2(CancellationToken cancellationToken = default)` |
 | `setPenalCodesV2(IReadOnlyList<PenalCodeV2> codes, CancellationToken cancellationToken = default)` |
 | `setApiIdsV2(SetApiIdsV2Request request, CancellationToken cancellationToken = default)` |
 | `getTemplatesV2(int? recordTypeId = null, CancellationToken cancellationToken = default)` |

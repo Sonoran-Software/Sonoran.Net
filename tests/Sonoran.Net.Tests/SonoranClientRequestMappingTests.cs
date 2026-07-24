@@ -43,6 +43,22 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task GetPenalCodesV2_UsesGeneralPenalCodesRoute()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """[{"code":"1A"}]""");
+
+        using var client = CreateClient(handler);
+        var response = await client.Cad.getPenalCodesV2();
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal(HttpMethod.Get, request.Method);
+        Assert.Equal("https://api.sonorancad.com/v2/general/penal-codes", GetEscapedUrl(request));
+        Assert.Null(request.Content);
+        Assert.True(response.success);
+    }
+
+    [Fact]
     public async Task SetCommunityLinkV2_UsesCredentialBody()
     {
         var handler = new RecordingHandler();
