@@ -163,6 +163,50 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task GetDispatchTemplatesV2_UsesListAndDetailRoutes()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, "[]");
+        handler.QueueJson(HttpStatusCode.OK, "{}");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.getDispatchTemplatesV2();
+        _ = await client.Cad.getDispatchTemplatesV2(3);
+
+        Assert.Equal(2, handler.Requests.Count);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/dispatch-templates", GetEscapedUrl(handler.Requests[0]));
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/dispatch-templates/3", GetEscapedUrl(handler.Requests[1]));
+    }
+
+    [Fact]
+    public async Task CreateCustomDispatchCallV2_UsesTemplateValuesAndTargets()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"callId":124}""");
+
+        using var client = CreateClient(handler);
+        _ = await client.Cad.createCustomDispatchCallV2(new CreateCustomDispatchCallV2Request
+        {
+            ServerId = 11,
+            TemplateId = 3,
+            Values = new Dictionary<string, object?>
+            {
+                ["status"] = "active",
+                ["description"] = "Structure fire"
+            },
+            ApiIds = ["fivem:123"]
+        });
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("https://api.sonorancad.com/v2/emergency/servers/11/custom-dispatch-calls", GetEscapedUrl(request));
+        var body = JsonNode.Parse(await request.Content!.ReadAsStringAsync())!.AsObject();
+        Assert.Equal(3, body["templateId"]!.GetValue<int>());
+        Assert.Equal("active", body["values"]!["status"]!.GetValue<string>());
+        Assert.Equal("fivem:123", body["communityUserIds"]![0]!.GetValue<string>());
+        Assert.Null(body["serverId"]);
+    }
+
+    [Fact]
     public async Task SetUnitStatusV2_StripsServerIdFromBody()
     {
         var handler = new RecordingHandler();

@@ -171,8 +171,14 @@ public sealed class SonoranCadClient
     public Task<SonoranResponse> deleteEmergencyCallV2(int callId, int? serverId = null, CancellationToken cancellationToken = default) =>
         _client.deleteEmergencyCallV2(callId, serverId, cancellationToken);
 
+    public Task<SonoranResponse> getDispatchTemplatesV2(int? templateId = null, CancellationToken cancellationToken = default) =>
+        _client.getDispatchTemplatesV2(templateId, cancellationToken);
+
     public Task<SonoranResponse> createDispatchCallV2(CreateDispatchCallV2Request request, CancellationToken cancellationToken = default) =>
         _client.createDispatchCallV2(request, cancellationToken);
+
+    public Task<SonoranResponse> createCustomDispatchCallV2(CreateCustomDispatchCallV2Request request, CancellationToken cancellationToken = default) =>
+        _client.createCustomDispatchCallV2(request, cancellationToken);
 
     public Task<SonoranResponse> updateDispatchCallV2(int callId, UpdateDispatchCallV2Request request, CancellationToken cancellationToken = default) =>
         _client.updateDispatchCallV2(callId, request, cancellationToken);

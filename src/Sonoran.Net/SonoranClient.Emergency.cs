@@ -93,10 +93,26 @@ public sealed partial class SonoranClient
         return RequestAsync(HttpMethod.Delete, $"v2/emergency/servers/{resolvedServerId}/calls/911/{callId}", cancellationToken: cancellationToken);
     }
 
+    public Task<SonoranResponse> getDispatchTemplatesV2(int? templateId = null, CancellationToken cancellationToken = default)
+    {
+        if (templateId.HasValue)
+        {
+            AssertPositiveInteger(templateId.Value, nameof(templateId));
+            return RequestAsync(HttpMethod.Get, $"v2/emergency/dispatch-templates/{templateId.Value}", cancellationToken: cancellationToken);
+        }
+        return RequestAsync(HttpMethod.Get, "v2/emergency/dispatch-templates", cancellationToken: cancellationToken);
+    }
+
     public Task<SonoranResponse> createDispatchCallV2(CreateDispatchCallV2Request request, CancellationToken cancellationToken = default)
     {
         var resolvedServerId = ResolveServerId(request.ServerId);
         return RequestAsync(HttpMethod.Post, $"v2/emergency/servers/{resolvedServerId}/dispatch-calls", body: WithoutServerId(request), cancellationToken: cancellationToken);
+    }
+
+    public Task<SonoranResponse> createCustomDispatchCallV2(CreateCustomDispatchCallV2Request request, CancellationToken cancellationToken = default)
+    {
+        var resolvedServerId = ResolveServerId(request.ServerId);
+        return RequestAsync(HttpMethod.Post, $"v2/emergency/servers/{resolvedServerId}/custom-dispatch-calls", body: WithoutServerId(request), cancellationToken: cancellationToken);
     }
 
     public Task<SonoranResponse> updateDispatchCallV2(int callId, UpdateDispatchCallV2Request request, CancellationToken cancellationToken = default)

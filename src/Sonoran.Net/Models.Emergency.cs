@@ -197,6 +197,33 @@ public sealed record CreateDispatchCallV2Request
     public int? DeleteAfterMinutes { get; init; }
 }
 
+public sealed record CreateCustomDispatchCallV2Request
+{
+    public int? ServerId { get; init; }
+    public int TemplateId { get; init; }
+    public Dictionary<string, object?> Values { get; init; } = [];
+    public IReadOnlyList<DispatchCallNoteV2> Notes { get; init; } = [];
+    public string? AccountUuid { get; init; }
+    public IReadOnlyList<string>? Accounts { get; init; }
+    [JsonIgnore]
+    public string? CommunityUserId { get; init; }
+    [JsonIgnore]
+    public string? ApiId { get; init; }
+    [JsonProperty("communityUserId")]
+    public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
+    [JsonIgnore]
+    public IReadOnlyList<string>? CommunityUserIds { get; init; }
+    [JsonIgnore]
+    public IReadOnlyList<string>? ApiIds { get; init; }
+    [JsonProperty("communityUserIds")]
+    public IReadOnlyList<string>? SerializedCommunityUserIds => CommunityUserIds ?? ApiIds;
+    public IReadOnlyList<int>? IdentIds { get; init; }
+    public long? Roblox { get; init; }
+    public string? Discord { get; init; }
+    public Dictionary<string, string>? MetaData { get; init; }
+    public int? DeleteAfterMinutes { get; init; }
+}
+
 public sealed record UpdateDispatchCallV2Request
 {
     public int? ServerId { get; init; }

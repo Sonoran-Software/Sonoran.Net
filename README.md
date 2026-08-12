@@ -185,7 +185,9 @@ CAD methods are available through `sonoran.Cad`.
 | `addIdentifiersToGroupV2(AddIdentifiersToGroupV2Request request, CancellationToken cancellationToken = default)` |
 | `createEmergencyCallV2(CreateEmergencyCallV2Request request, CancellationToken cancellationToken = default)` |
 | `deleteEmergencyCallV2(int callId, int? serverId = null, CancellationToken cancellationToken = default)` |
+| `getDispatchTemplatesV2(int? templateId = null, CancellationToken cancellationToken = default)` |
 | `createDispatchCallV2(CreateDispatchCallV2Request request, CancellationToken cancellationToken = default)` |
+| `createCustomDispatchCallV2(CreateCustomDispatchCallV2Request request, CancellationToken cancellationToken = default)` |
 | `updateDispatchCallV2(int callId, UpdateDispatchCallV2Request request, CancellationToken cancellationToken = default)` |
 | `attachUnitsToDispatchCallV2(int callId, DispatchAttachmentV2Request request, CancellationToken cancellationToken = default)` |
 | `detachUnitsFromDispatchCallV2(DispatchAttachmentV2Request request, CancellationToken cancellationToken = default)` |
