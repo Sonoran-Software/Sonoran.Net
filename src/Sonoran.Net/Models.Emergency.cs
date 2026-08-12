@@ -171,6 +171,45 @@ public sealed record DispatchCallNoteV2
     public string? Content { get; init; }
 }
 
+public sealed record DispatchStatusOptionV2
+{
+    public string Id { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public int Status { get; init; }
+}
+
+public sealed record DispatchFieldV2
+{
+    public string Uid { get; init; } = string.Empty;
+    public string Type { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public string Binding { get; init; } = string.Empty;
+    public int Size { get; init; }
+    public bool Required { get; init; }
+    public bool Locked { get; init; }
+    public string Placeholder { get; init; } = string.Empty;
+    public IReadOnlyList<string> Options { get; init; } = [];
+}
+
+public sealed record DispatchSectionV2
+{
+    public string Uid { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public string Icon { get; init; } = string.Empty;
+    public int Size { get; init; }
+    public IReadOnlyList<DispatchFieldV2> Fields { get; init; } = [];
+}
+
+public sealed record DispatchTemplateV2
+{
+    public int TemplateId { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public int Version { get; init; }
+    public bool IsDefault { get; init; }
+    public IReadOnlyList<DispatchStatusOptionV2> StatusOptions { get; init; } = [];
+    public IReadOnlyList<DispatchSectionV2> Sections { get; init; } = [];
+}
+
 public sealed record CreateDispatchCallV2Request
 {
     public int? ServerId { get; init; }
