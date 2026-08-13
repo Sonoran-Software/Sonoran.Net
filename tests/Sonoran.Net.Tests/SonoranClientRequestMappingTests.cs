@@ -576,6 +576,42 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task RadioZoneCrudV2_UsesRoomScopedPaths()
+    {
+        var handler = new RecordingHandler();
+        for (var index = 0; index < 4; index++)
+        {
+            handler.QueueJson(HttpStatusCode.OK, """{"roomId":2,"geoZones":[],"degradeZones":[]}""");
+        }
+
+        var zone = new RadioGeoZone
+        {
+            Points =
+            [
+                new() { X = 0, Y = 0 },
+                new() { X = 1, Y = 0 },
+                new() { X = 1, Y = 1 }
+            ],
+            Options = new() { Name = "Test Zone", MinZ = 0, MaxZ = 10 }
+        };
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.getZonesV2();
+        _ = await client.Radio.createZoneV2(RadioMutableZoneType.Geo, zone);
+        _ = await client.Radio.updateZoneV2(RadioMutableZoneType.Geo, "Test Zone", zone);
+        _ = await client.Radio.deleteZoneV2(RadioMutableZoneType.Geo, "Test Zone");
+
+        var baseUrl = "https://api.sonoranradio.com/v2/servers/radio-community/rooms/2/zones";
+        Assert.Collection(
+            handler.Requests,
+            request => { Assert.Equal(HttpMethod.Get, request.Method); Assert.Equal(baseUrl, GetEscapedUrl(request)); },
+            request => { Assert.Equal(HttpMethod.Post, request.Method); Assert.Equal(baseUrl + "/geo", GetEscapedUrl(request)); },
+            request => { Assert.Equal(new HttpMethod("PATCH"), request.Method); Assert.Equal(baseUrl + "/geo/Test%20Zone", GetEscapedUrl(request)); },
+            request => { Assert.Equal(HttpMethod.Delete, request.Method); Assert.Equal(baseUrl + "/geo/Test%20Zone", GetEscapedUrl(request)); }
+        );
+    }
+
+    [Fact]
     public async Task SetRoomId_UpdatesRoomScopedRadioPaths()
     {
         var handler = new RecordingHandler();

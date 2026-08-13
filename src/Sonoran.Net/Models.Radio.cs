@@ -1,5 +1,49 @@
 namespace Sonoran;
 
+public enum RadioMutableZoneType
+{
+    Geo,
+    Degrade
+}
+
+public sealed record RadioZonePoint
+{
+    public double X { get; init; }
+    public double Y { get; init; }
+}
+
+public sealed record RadioGeoZoneOptions
+{
+    public string Name { get; init; } = string.Empty;
+    public double MinZ { get; init; }
+    public double MaxZ { get; init; }
+    public string ZoneType { get; init; } = "geo";
+    public IReadOnlyList<int> TransmitChannels { get; init; } = [];
+    public IReadOnlyList<int> ScanChannels { get; init; } = [];
+    public IReadOnlyList<string> AcePerms { get; init; } = [];
+}
+
+public sealed record RadioGeoZone
+{
+    public IReadOnlyList<RadioZonePoint> Points { get; init; } = [];
+    public RadioGeoZoneOptions Options { get; init; } = new();
+}
+
+public sealed record RadioDegradeZoneOptions
+{
+    public string Name { get; init; } = string.Empty;
+    public double MinZ { get; init; }
+    public double MaxZ { get; init; }
+    public string ZoneType { get; init; } = "degrade";
+    public double DegradeStrength { get; init; }
+}
+
+public sealed record RadioDegradeZone
+{
+    public IReadOnlyList<RadioZonePoint> Points { get; init; } = [];
+    public RadioDegradeZoneOptions Options { get; init; } = new();
+}
+
 public sealed record SetUserDisplayNameV2Request
 {
     public string? CommunityId { get; init; }

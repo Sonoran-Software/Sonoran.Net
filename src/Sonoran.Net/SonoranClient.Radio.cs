@@ -11,6 +11,41 @@ public sealed partial class SonoranClient
         return RequestAsync(HttpMethod.Get, $"v2/servers/{resolvedCommunityId}/channels", cancellationToken: cancellationToken);
     }
 
+    public Task<SonoranResponse> getZonesV2(string? communityId = null, CancellationToken cancellationToken = default)
+    {
+        var resolvedCommunityId = ResolveRadioCommunityId(communityId);
+        var roomId = ResolveRadioRoomId();
+        return RequestAsync(HttpMethod.Get, $"v2/servers/{resolvedCommunityId}/rooms/{roomId}/zones", cancellationToken: cancellationToken);
+    }
+
+    public Task<SonoranResponse> createZoneV2(RadioMutableZoneType zoneType, object zone, string? communityId = null, CancellationToken cancellationToken = default)
+    {
+        var resolvedCommunityId = ResolveRadioCommunityId(communityId);
+        var roomId = ResolveRadioRoomId();
+        return RequestAsync(HttpMethod.Post, $"v2/servers/{resolvedCommunityId}/rooms/{roomId}/zones/{ZoneTypePath(zoneType)}", body: WithRadioRoomId(new { zone }), cancellationToken: cancellationToken);
+    }
+
+    public Task<SonoranResponse> updateZoneV2(RadioMutableZoneType zoneType, string zoneName, object zone, string? communityId = null, CancellationToken cancellationToken = default)
+    {
+        var resolvedCommunityId = ResolveRadioCommunityId(communityId);
+        var roomId = ResolveRadioRoomId();
+        return RequestAsync(PatchMethod, $"v2/servers/{resolvedCommunityId}/rooms/{roomId}/zones/{ZoneTypePath(zoneType)}/{EncodePathSegment(zoneName)}", body: WithRadioRoomId(new { zone }), cancellationToken: cancellationToken);
+    }
+
+    public Task<SonoranResponse> deleteZoneV2(RadioMutableZoneType zoneType, string zoneName, string? communityId = null, CancellationToken cancellationToken = default)
+    {
+        var resolvedCommunityId = ResolveRadioCommunityId(communityId);
+        var roomId = ResolveRadioRoomId();
+        return RequestAsync(HttpMethod.Delete, $"v2/servers/{resolvedCommunityId}/rooms/{roomId}/zones/{ZoneTypePath(zoneType)}/{EncodePathSegment(zoneName)}", cancellationToken: cancellationToken);
+    }
+
+    private static string ZoneTypePath(RadioMutableZoneType zoneType) => zoneType switch
+    {
+        RadioMutableZoneType.Geo => "geo",
+        RadioMutableZoneType.Degrade => "degrade",
+        _ => throw new ArgumentOutOfRangeException(nameof(zoneType))
+    };
+
     public Task<SonoranResponse> getConnectedUsersV2(string? communityId = null, CancellationToken cancellationToken = default)
     {
         var resolvedCommunityId = ResolveRadioCommunityId(communityId);

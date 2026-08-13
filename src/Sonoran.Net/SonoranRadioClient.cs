@@ -12,6 +12,18 @@ public sealed class SonoranRadioClient
     public Task<SonoranResponse> getCommunityChannelsV2(string? communityId = null, CancellationToken cancellationToken = default) =>
         _client.getCommunityChannelsV2(communityId, cancellationToken);
 
+    public Task<SonoranResponse> getZonesV2(string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.getZonesV2(communityId, cancellationToken);
+
+    public Task<SonoranResponse> createZoneV2(RadioMutableZoneType zoneType, object zone, string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.createZoneV2(zoneType, zone, communityId, cancellationToken);
+
+    public Task<SonoranResponse> updateZoneV2(RadioMutableZoneType zoneType, string zoneName, object zone, string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.updateZoneV2(zoneType, zoneName, zone, communityId, cancellationToken);
+
+    public Task<SonoranResponse> deleteZoneV2(RadioMutableZoneType zoneType, string zoneName, string? communityId = null, CancellationToken cancellationToken = default) =>
+        _client.deleteZoneV2(zoneType, zoneName, communityId, cancellationToken);
+
     public Task<SonoranResponse> getConnectedUsersV2(string? communityId = null, CancellationToken cancellationToken = default) =>
         _client.getConnectedUsersV2(communityId, cancellationToken);
 
