@@ -612,6 +612,28 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task RadioCircleZoneV2_SerializesCenterAndRadius()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.Created, """{"roomId":2,"geoZones":[],"degradeZones":[]}""");
+
+        var zone = new RadioGeoZone
+        {
+            Center = new() { X = 10, Y = 20 },
+            Radius = 50,
+            Options = new() { Name = "Circle Zone", MinZ = 0, MaxZ = 100 }
+        };
+
+        using var client = CreateRadioClient(handler);
+        _ = await client.Radio.createZoneV2(RadioMutableZoneType.Geo, zone);
+
+        var request = Assert.Single(handler.Requests);
+        var body = await request.Content!.ReadAsStringAsync();
+        Assert.Contains("\"center\":{\"x\":10.0,\"y\":20.0}", body);
+        Assert.Contains("\"radius\":50.0", body);
+    }
+
+    [Fact]
     public async Task SetRoomId_UpdatesRoomScopedRadioPaths()
     {
         var handler = new RecordingHandler();

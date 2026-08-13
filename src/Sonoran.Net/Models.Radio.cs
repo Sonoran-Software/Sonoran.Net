@@ -26,6 +26,8 @@ public sealed record RadioGeoZoneOptions
 public sealed record RadioGeoZone
 {
     public IReadOnlyList<RadioZonePoint> Points { get; init; } = [];
+    public RadioZonePoint? Center { get; init; }
+    public double? Radius { get; init; }
     public RadioGeoZoneOptions Options { get; init; } = new();
 }
 
@@ -41,6 +43,8 @@ public sealed record RadioDegradeZoneOptions
 public sealed record RadioDegradeZone
 {
     public IReadOnlyList<RadioZonePoint> Points { get; init; } = [];
+    public RadioZonePoint? Center { get; init; }
+    public double? Radius { get; init; }
     public RadioDegradeZoneOptions Options { get; init; } = new();
 }
 
