@@ -230,4 +230,25 @@ public sealed class SonoranCadClient
 
     public Task<SonoranResponse> deleteBlipsV2(IReadOnlyList<int> ids, int? serverId = null, CancellationToken cancellationToken = default) =>
         _client.deleteBlipsV2(ids, serverId, cancellationToken);
+
+    public Task<SonoranResponse> getIntegrationPanelsV2(CancellationToken cancellationToken = default) =>
+        _client.getIntegrationPanelsV2(cancellationToken);
+
+    public Task<SonoranResponse> getIntegrationPanelV2(string panelKey, CancellationToken cancellationToken = default) =>
+        _client.getIntegrationPanelV2(panelKey, cancellationToken);
+
+    public Task<SonoranResponse> setIntegrationPanelV2(string panelKey, IntegrationPanelDefinitionV2 definition, CancellationToken cancellationToken = default) =>
+        _client.setIntegrationPanelV2(panelKey, definition, cancellationToken);
+
+    public Task<SonoranResponse> deleteIntegrationPanelV2(string panelKey, CancellationToken cancellationToken = default) =>
+        _client.deleteIntegrationPanelV2(panelKey, cancellationToken);
+
+    public Task<SonoranResponse> setIntegrationPanelStateV2(string panelKey, string instanceKey, IReadOnlyDictionary<string, object?> state, int? serverId = null, CancellationToken cancellationToken = default) =>
+        _client.setIntegrationPanelStateV2(panelKey, instanceKey, state, serverId, cancellationToken);
+
+    public Task<SonoranResponse> getIntegrationPanelActionsV2(string panelKey, GetIntegrationPanelActionsV2Query? query = null, CancellationToken cancellationToken = default) =>
+        _client.getIntegrationPanelActionsV2(panelKey, query, cancellationToken);
+
+    public Task<SonoranResponse> acknowledgeIntegrationPanelActionV2(string panelKey, string eventId, AcknowledgeIntegrationPanelActionV2Request request, CancellationToken cancellationToken = default) =>
+        _client.acknowledgeIntegrationPanelActionV2(panelKey, eventId, request, cancellationToken);
 }

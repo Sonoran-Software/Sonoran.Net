@@ -735,6 +735,53 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task IntegrationPanelV2Methods_MapAllRoutes()
+    {
+        var handler = new RecordingHandler();
+        for (var index = 0; index < 7; index++)
+        {
+            handler.QueueJson(HttpStatusCode.OK, """{"ok":true}""");
+        }
+
+        using var client = CreateClient(handler);
+        var definition = new IntegrationPanelDefinitionV2
+        {
+            Name = "Door Locks",
+            Body = []
+        };
+
+        _ = await client.Cad.getIntegrationPanelsV2();
+        _ = await client.Cad.getIntegrationPanelV2("doors/main");
+        _ = await client.Cad.setIntegrationPanelV2("doors", definition);
+        _ = await client.Cad.deleteIntegrationPanelV2("doors");
+        _ = await client.Cad.setIntegrationPanelStateV2("doors", "mission-row", new Dictionary<string, object?> { ["locked"] = true }, 11);
+        _ = await client.Cad.getIntegrationPanelActionsV2("doors", new GetIntegrationPanelActionsV2Query { ServerId = 11, After = 42, Limit = 25 });
+        _ = await client.Cad.acknowledgeIntegrationPanelActionV2("doors", "event/1", new AcknowledgeIntegrationPanelActionV2Request
+        {
+            ServerId = 11,
+            Success = true,
+            Message = "Locked",
+            Result = new Dictionary<string, object?> { ["locked"] = true }
+        });
+
+        Assert.Equal(
+            [
+                "https://api.sonorancad.com/v2/integration-panels",
+                "https://api.sonorancad.com/v2/integration-panels/doors%2Fmain",
+                "https://api.sonorancad.com/v2/integration-panels/doors",
+                "https://api.sonorancad.com/v2/integration-panels/doors",
+                "https://api.sonorancad.com/v2/integration-panels/servers/11/panels/doors/instances/mission-row/state",
+                "https://api.sonorancad.com/v2/integration-panels/servers/11/panels/doors/actions?after=42&limit=25",
+                "https://api.sonorancad.com/v2/integration-panels/servers/11/panels/doors/actions/event%2F1/ack"
+            ],
+            handler.Requests.Select(GetEscapedUrl));
+
+        Assert.Equal("""{"definition":{"schemaVersion":1,"name":"Door Locks","body":[]}}""", await handler.Requests[2].Content!.ReadAsStringAsync());
+        Assert.Equal("""{"state":{"locked":true}}""", await handler.Requests[4].Content!.ReadAsStringAsync());
+        Assert.Equal("""{"success":true,"message":"Locked","result":{"locked":true}}""", await handler.Requests[6].Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public void Constructor_RequiresProduct()
     {
         var exception = Assert.Throws<ArgumentException>(() => new SonoranClient(new SonoranClientOptions
