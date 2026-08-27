@@ -35,11 +35,13 @@ public sealed partial class SonoranClient : IDisposable
     private readonly Func<TimeSpan, CancellationToken, Task> _delay;
     private readonly string _apiUrl;
 
-    private readonly Dictionary<SonoranProduct, string> AllowedCommonNames = new()
+    private readonly Dictionary<SonoranProduct, HashSet<string>> AllowedCommonNames = new()
     {
-        { SonoranProduct.CAD, "api.sonorancad.com" },
-        { SonoranProduct.CMS, "api.sonorancms.com" },
-        { SonoranProduct.RADIO, "api.sonoranradio.com" }
+        // Cloudflare's edge certificates use each zone apex as the CN and cover the
+        // API hostnames with wildcard SANs. FiveM Mono requires this manual CN check.
+        { SonoranProduct.CAD, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonorancad.com", "sonorancad.com" } },
+        { SonoranProduct.CMS, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonorancms.com", "sonorancms.com" } },
+        { SonoranProduct.RADIO, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonoranradio.com", "sonoranradio.com" } }
     };
 
     public SonoranClient(SonoranClientOptions options, HttpClient? httpClient = null, Func<TimeSpan, CancellationToken, Task>? delay = null)
@@ -64,7 +66,8 @@ public sealed partial class SonoranClient : IDisposable
 
         if (!httpClientProvided)
         {
-            // Thanks to FiveM's Mono, we have to do certificate validation ourselves
+            // FiveM Mono reports sslPolicyErrors for otherwise valid certificates, so
+            // validate the expiration and expected product common names manually.
             ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
             {
                 if (DateTime.Parse(cert!.GetExpirationDateString()) < DateTime.Now)
@@ -74,7 +77,7 @@ public sealed partial class SonoranClient : IDisposable
 
                 string? commonName = ExtractCommonName(cert.Subject);
 
-                if (string.IsNullOrEmpty(commonName) || !AllowedCommonNames.ContainsValue(commonName!))
+                if (string.IsNullOrEmpty(commonName) || !AllowedCommonNames[Options.product.Value].Contains(commonName!))
                 {
                     throw new HttpRequestException("Certificate subject mismatch");
                 }
