@@ -37,11 +37,11 @@ public sealed partial class SonoranClient : IDisposable
 
     private readonly Dictionary<SonoranProduct, HashSet<string>> AllowedCommonNames = new()
     {
-        // Cloudflare's edge certificate uses the zone apex as its CN and covers the
-        // API hostname with a wildcard SAN. FiveM Mono requires this manual CN check.
+        // Cloudflare's edge certificates use each zone apex as the CN and cover the
+        // API hostnames with wildcard SANs. FiveM Mono requires this manual CN check.
         { SonoranProduct.CAD, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonorancad.com", "sonorancad.com" } },
-        { SonoranProduct.CMS, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonorancms.com" } },
-        { SonoranProduct.RADIO, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonoranradio.com" } }
+        { SonoranProduct.CMS, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonorancms.com", "sonorancms.com" } },
+        { SonoranProduct.RADIO, new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "api.sonoranradio.com", "sonoranradio.com" } }
     };
 
     public SonoranClient(SonoranClientOptions options, HttpClient? httpClient = null, Func<TimeSpan, CancellationToken, Task>? delay = null)
