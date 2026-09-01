@@ -27,6 +27,9 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> getPenalCodesV2(CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Get, "v2/general/penal-codes", cancellationToken: cancellationToken);
 
+    public Task<SonoranResponse> getDatabaseSyncConfigurationV2(CancellationToken cancellationToken = default) =>
+        RequestAsync(HttpMethod.Get, "v2/general/database-sync", cancellationToken: cancellationToken);
+
     public Task<SonoranResponse> setPenalCodesV2(IReadOnlyList<PenalCodeV2> codes, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Put, "v2/general/penal-codes", body: new { codes }, cancellationToken: cancellationToken);
 

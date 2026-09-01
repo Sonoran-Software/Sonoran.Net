@@ -51,6 +51,14 @@ public sealed record PenalCodeV2
     public decimal? BondAmount { get; init; }
 }
 
+public sealed record DatabaseSyncConfigurationV2
+{
+    public bool Enabled { get; init; }
+    public bool Character { get; init; }
+    public bool Licenses { get; init; }
+    public bool VehicleRegistrations { get; init; }
+}
+
 public sealed record SetApiIdsV2Request
 {
     public string? Username { get; init; }

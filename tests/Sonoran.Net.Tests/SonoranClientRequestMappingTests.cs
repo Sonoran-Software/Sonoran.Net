@@ -59,6 +59,29 @@ public sealed class SonoranClientRequestMappingTests
     }
 
     [Fact]
+    public async Task GetDatabaseSyncConfigurationV2_UsesGeneralDatabaseSyncRoute()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"enabled":true,"character":true,"licenses":false,"vehicleRegistrations":true}""");
+
+        using var client = CreateClient(handler);
+        var response = await client.Cad.getDatabaseSyncConfigurationV2();
+
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal(HttpMethod.Get, request.Method);
+        Assert.Equal("https://api.sonorancad.com/v2/general/database-sync", GetEscapedUrl(request));
+        Assert.Null(request.Content);
+        Assert.True(response.success);
+
+        var configuration = response.data?.ToObject<DatabaseSyncConfigurationV2>();
+        Assert.NotNull(configuration);
+        Assert.True(configuration.Enabled);
+        Assert.True(configuration.Character);
+        Assert.False(configuration.Licenses);
+        Assert.True(configuration.VehicleRegistrations);
+    }
+
+    [Fact]
     public async Task SetCommunityLinkV2_UsesCredentialBody()
     {
         var handler = new RecordingHandler();
