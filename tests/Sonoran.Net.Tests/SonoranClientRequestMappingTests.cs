@@ -8,6 +8,19 @@ namespace Sonoran.Net.Tests;
 public sealed class SonoranClientRequestMappingTests
 {
     [Fact]
+    public async Task SelectedFieldGrants_AreDiscoveredAndSentWithoutBroadening()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"version":2,"permissions":[{"id":"record.4.edit.selected","action":"edit.selected","templateId":4}],"legacyGrants":{}}""");
+        handler.QueueJson(HttpStatusCode.OK, """{"version":2}""");
+        using var client = CreateClient(handler);
+        var catalog = (await client.Cad.getPermissionCatalogV2()).data!.ToObject<CadPermissionCatalogV2>()!;
+        Assert.Equal("edit.selected", Assert.Single(catalog.Permissions).Action);
+        await client.Cad.replaceAccountPermissionsV2("account-uuid", new[] { "record.4.read", catalog.Permissions[0].Id });
+        Assert.Equal("""{"version":2,"grants":["record.4.read","record.4.edit.selected"]}""", await handler.Requests[1].Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task BlipPanelReferences_AreSerializedForCreateAndUpdate()
     {
         var handler = new RecordingHandler();
