@@ -72,6 +72,16 @@ public sealed class SonoranCadClient
     public Task<SonoranResponse> setCommunityLinkV2(SetCommunityLinkV2Request request, CancellationToken cancellationToken = default) =>
         _client.setCommunityLinkV2(request, cancellationToken);
 
+    public Task<SonoranResponse> getPermissionCatalogV2(CancellationToken cancellationToken = default) =>
+        _client.getPermissionCatalogV2(cancellationToken);
+
+    public Task<SonoranResponse> getAccountPermissionsV2(string accountUuid, CancellationToken cancellationToken = default) =>
+        _client.getAccountPermissionsV2(accountUuid, cancellationToken);
+
+    /// <summary>Replaces every explicit grant. An empty list clears permissions.</summary>
+    public Task<SonoranResponse> replaceAccountPermissionsV2(string accountUuid, IReadOnlyList<string> grants, CancellationToken cancellationToken = default) =>
+        _client.replaceAccountPermissionsV2(accountUuid, grants, cancellationToken);
+
     public Task<SonoranResponse> setAccountPermissionsV2(SetAccountPermissionsV2Request request, CancellationToken cancellationToken = default) =>
         _client.setAccountPermissionsV2(request, cancellationToken);
 

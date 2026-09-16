@@ -8,6 +8,39 @@ namespace Sonoran.Net.Tests;
 public sealed class SonoranClientRequestMappingTests
 {
     [Fact]
+    public async Task GranularPermissions_UsesAuthenticatedRoutesAndExplicitReplacements()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"version":2,"permissions":[{"id":"global.police","label":"Police","action":"police"}],"legacyGrants":{"POLICE":["global.police"]}}""");
+        handler.QueueJson(HttpStatusCode.OK, """{"permissions":{"version":2,"grants":["global.police"]},"owner":false,"migrated":true,"status":1}""");
+        handler.QueueJson(HttpStatusCode.OK, """{"accountUuid":"account-uuid","permissions":{"version":2,"grants":["global.police"]}}""");
+        handler.QueueJson(HttpStatusCode.OK, """{"accountUuid":"account-uuid","permissions":{"version":2,"grants":[]}}""");
+        using var client = CreateClient(handler);
+
+        var catalog = await client.Cad.getPermissionCatalogV2();
+        Assert.Equal("global.police", catalog.data!.ToObject<CadPermissionCatalogV2>()!.LegacyGrants["POLICE"][0]);
+        var account = await client.Cad.getAccountPermissionsV2("account/uuid");
+        Assert.Equal(1, account.data!.ToObject<CadAccountPermissionsV2>()!.Status);
+        await client.Cad.replaceAccountPermissionsV2("account-uuid", new[] { "global.police" });
+        var cleared = await client.Cad.replaceAccountPermissionsV2("account-uuid", Array.Empty<string>());
+        Assert.Empty(cleared.data!.ToObject<CadReplaceAccountPermissionsV2Response>()!.Permissions.Grants);
+
+        Assert.Equal(4, handler.Requests.Count);
+        Assert.All(handler.Requests, request => Assert.NotNull(request.Headers.Authorization));
+        Assert.Equal(HttpMethod.Get, handler.Requests[0].Method);
+        Assert.EndsWith("/permissions/catalog", GetEscapedUrl(handler.Requests[0]));
+        Assert.Equal(HttpMethod.Get, handler.Requests[1].Method);
+        Assert.EndsWith("/permissions/accounts/account%2Fuuid", GetEscapedUrl(handler.Requests[1]));
+        foreach (var request in handler.Requests.Skip(2))
+        {
+            Assert.Equal(HttpMethod.Put, request.Method);
+            Assert.EndsWith("/permissions/accounts/account-uuid", GetEscapedUrl(request));
+        }
+        Assert.Equal("""{"version":2,"grants":["global.police"]}""", await handler.Requests[2].Content!.ReadAsStringAsync());
+        Assert.Equal("""{"version":2,"grants":[]}""", await handler.Requests[3].Content!.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task GetLoginPageV2_UsesPublicQueryWithoutAuth()
     {
         var handler = new RecordingHandler();

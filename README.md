@@ -298,3 +298,19 @@ Radio methods are available through `sonoran.Radio`.
 ## Notes
 
 The client automatically retries `429 Too Many Requests` responses up to 2 times and respects `Retry-After` when it is provided.
+
+## Granular CAD permissions (v2)
+
+Use `getPermissionCatalogV2`, `getAccountPermissionsV2`, and `replaceAccountPermissionsV2` for new permission integrations. The existing `setAccountPermissionsV2` remains a legacy category adapter.
+
+```csharp
+var catalogResponse = await sonoran.Cad.getPermissionCatalogV2();
+var catalog = catalogResponse.success ? catalogResponse.data?.ToObject<CadPermissionCatalogV2>() : null;
+var accountResponse = await sonoran.Cad.getAccountPermissionsV2(accountUuid);
+var account = accountResponse.success ? accountResponse.data?.ToObject<CadAccountPermissionsV2>() : null;
+var response = await sonoran.Cad.replaceAccountPermissionsV2(accountUuid, new[] { "global.police" });
+// Clear all grants explicitly:
+var cleared = await sonoran.Cad.replaceAccountPermissionsV2(accountUuid, new string[0]);
+```
+
+Use the account UUID, not a community user ID, in these calls. Fetch the community catalog for exact, case-sensitive grant IDs and template IDs; `legacyGrants` maps uppercase legacy flags to current grants. Replacement overwrites the full grant list (version 2), and an empty list clears it. Never treat a failed read as an empty list. Only pending or active non-owner accounts can be edited. Nonempty grants activate pending accounts subject to the member limit; empty grants make active accounts pending. A granular save ends legacy category inheritance for future record templates.

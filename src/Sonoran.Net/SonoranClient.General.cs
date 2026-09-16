@@ -89,6 +89,16 @@ public sealed partial class SonoranClient
     public Task<SonoranResponse> setCommunityLinkV2(SetCommunityLinkV2Request request, CancellationToken cancellationToken = default) =>
         RequestAsync(HttpMethod.Post, "v2/general/links/set", body: request, cancellationToken: cancellationToken);
 
+    public Task<SonoranResponse> getPermissionCatalogV2(CancellationToken cancellationToken = default) =>
+        RequestAsync(HttpMethod.Get, "v2/general/permissions/catalog", cancellationToken: cancellationToken);
+
+    public Task<SonoranResponse> getAccountPermissionsV2(string accountUuid, CancellationToken cancellationToken = default) =>
+        RequestAsync(HttpMethod.Get, $"v2/general/permissions/accounts/{EncodePathSegment(accountUuid)}", cancellationToken: cancellationToken);
+
+    /// <summary>Replaces every explicit grant. An empty list clears permissions.</summary>
+    public Task<SonoranResponse> replaceAccountPermissionsV2(string accountUuid, IReadOnlyList<string> grants, CancellationToken cancellationToken = default) =>
+        RequestAsync(HttpMethod.Put, $"v2/general/permissions/accounts/{EncodePathSegment(accountUuid)}", body: new { version = 2, grants }, cancellationToken: cancellationToken);
+
     public Task<SonoranResponse> setAccountPermissionsV2(SetAccountPermissionsV2Request request, CancellationToken cancellationToken = default) =>
         RequestAsync(PatchMethod, "v2/general/accounts/permissions", body: request, cancellationToken: cancellationToken);
 
