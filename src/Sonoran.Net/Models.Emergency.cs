@@ -449,6 +449,8 @@ public sealed record BlipDisplayDataV2
 {
     public string? Title { get; init; }
     public string? Text { get; init; }
+    public string? PanelKey { get; init; }
+    public string? InstanceKey { get; init; }
 }
 
 public sealed record CreateBlipV2Request

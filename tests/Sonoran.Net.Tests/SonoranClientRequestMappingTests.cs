@@ -8,6 +8,24 @@ namespace Sonoran.Net.Tests;
 public sealed class SonoranClientRequestMappingTests
 {
     [Fact]
+    public async Task BlipPanelReferences_AreSerializedForCreateAndUpdate()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"id":12}""");
+        handler.QueueJson(HttpStatusCode.OK, """{"id":12}""");
+        using var client = CreateClient(handler);
+        var data = new[] { new BlipDisplayDataV2 { PanelKey = "smart-signs", InstanceKey = "sign-12" } };
+        await client.Cad.createBlipV2(new CreateBlipV2Request { ServerId = 1, SubType = "SMART_SIGN", Data = data });
+        await client.Cad.updateBlipV2(12, new UpdateBlipV2Request { ServerId = 1, Data = data });
+        foreach (var request in handler.Requests)
+        {
+            var body = JsonNode.Parse(await request.Content!.ReadAsStringAsync())!;
+            Assert.Equal("smart-signs", body["data"]![0]!["panelKey"]!.GetValue<string>());
+            Assert.Equal("sign-12", body["data"]![0]!["instanceKey"]!.GetValue<string>());
+        }
+    }
+
+    [Fact]
     public async Task GranularPermissions_UsesAuthenticatedRoutesAndExplicitReplacements()
     {
         var handler = new RecordingHandler();
