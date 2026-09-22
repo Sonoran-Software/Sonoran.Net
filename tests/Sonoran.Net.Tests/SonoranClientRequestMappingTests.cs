@@ -8,6 +8,31 @@ namespace Sonoran.Net.Tests;
 public sealed class SonoranClientRequestMappingTests
 {
     [Fact]
+    public async Task FiveMConfiguration_UsesServerScopeAndBodylessAcknowledgement()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, """{"revision":4,"schemaVersion":1,"templateRevision":"abc","serverId":3,"values":{"core":{"debugMode":false},"plugins":{}},"appliedRevision":null,"appliedAt":null}""");
+        handler.QueueJson(HttpStatusCode.OK, "{}");
+        handler.QueueJson(HttpStatusCode.OK, """{"success":true}""");
+        handler.QueueJson(HttpStatusCode.Conflict, """{"title":"Revision changed","detail":"Configuration changed after startup."}""");
+        using var client = CreateClient(handler);
+        var configuration = (await client.Cad.getFiveMConfigurationV2()).data!.ToObject<FiveMConfigurationV2>()!;
+        Assert.Equal(4, configuration.Revision);
+        Assert.False(configuration.Values.Core["debugMode"]!.ToObject<bool>());
+        Assert.Null(configuration.AppliedAt);
+        await client.Cad.getFiveMConfigurationV2(2);
+        Assert.True((await client.Cad.acknowledgeFiveMConfigurationV2(null, 4)).success);
+        Assert.False((await client.Cad.acknowledgeFiveMConfigurationV2(3, 4)).success);
+        Assert.EndsWith("/v2/fivem/servers/3/configuration", GetEscapedUrl(handler.Requests[0]));
+        Assert.EndsWith("/v2/fivem/servers/2/configuration", GetEscapedUrl(handler.Requests[1]));
+        Assert.EndsWith("/v2/fivem/servers/3/configuration/acknowledge/4", GetEscapedUrl(handler.Requests[2]));
+        Assert.Equal(HttpMethod.Post, handler.Requests[2].Method);
+        Assert.Null(handler.Requests[2].Content);
+        Assert.All(handler.Requests, request => Assert.Equal("Bearer", request.Headers.Authorization?.Scheme));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.Cad.acknowledgeFiveMConfigurationV2(3, 0));
+    }
+
+    [Fact]
     public async Task SelectedFieldGrants_AreDiscoveredAndSentWithoutBroadening()
     {
         var handler = new RecordingHandler();

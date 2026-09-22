@@ -9,6 +9,12 @@ public sealed class SonoranCadClient
         _client = client;
     }
 
+    public Task<SonoranResponse> getFiveMConfigurationV2(int? serverId = null, CancellationToken cancellationToken = default) =>
+        _client.getFiveMConfigurationV2(serverId, cancellationToken);
+
+    public Task<SonoranResponse> acknowledgeFiveMConfigurationV2(int? serverId, long revision, CancellationToken cancellationToken = default) =>
+        _client.acknowledgeFiveMConfigurationV2(serverId, revision, cancellationToken);
+
     public Task<SonoranResponse> getLoginPageV2(GetLoginPageV2Query? query = null, CancellationToken cancellationToken = default) =>
         _client.getLoginPageV2(query, cancellationToken);
 
