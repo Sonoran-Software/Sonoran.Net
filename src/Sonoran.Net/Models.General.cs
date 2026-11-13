@@ -251,7 +251,9 @@ public sealed record SendPhotoV2Request
     public string? SerializedCommunityUserId => CommunityUserId ?? ApiId;
     public long? Roblox { get; init; }
     public string? Discord { get; init; }
-    public string Url { get; init; } = string.Empty;
+    public string? Url { get; init; }
+    public string[]? Urls { get; init; }
+    public string? FileType { get; init; }
 }
 
 public sealed record UploadBodycamRecordingV2Request

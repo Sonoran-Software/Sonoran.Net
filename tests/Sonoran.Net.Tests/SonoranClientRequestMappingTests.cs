@@ -8,6 +8,19 @@ namespace Sonoran.Net.Tests;
 public sealed class SonoranClientRequestMappingTests
 {
     [Fact]
+    public async Task FileBatchPreservesUrlsAndType()
+    {
+        var handler = new RecordingHandler();
+        handler.QueueJson(HttpStatusCode.OK, "{\"delivered\":1,\"files\":2}");
+        using var client = CreateClient(handler);
+        await client.Cad.sendPhotoV2(new SendPhotoV2Request { CommunityUserId = "player-1234", Urls = new[] { "https://cdn.example/a", "https://cdn.example/b" }, FileType = "pdf" });
+        var body = JsonNode.Parse(await handler.Requests[0].Content!.ReadAsStringAsync())!;
+        Assert.Equal(2, body["urls"]!.AsArray().Count);
+        Assert.Equal("pdf", body["fileType"]!.GetValue<string>());
+        Assert.Null(body["url"]);
+    }
+
+    [Fact]
     public async Task SelectedFieldGrants_AreDiscoveredAndSentWithoutBroadening()
     {
         var handler = new RecordingHandler();
