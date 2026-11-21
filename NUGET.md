@@ -19,7 +19,6 @@ using var sonoran = new SonoranClient(new SonoranClientOptions
 {
     product = SonoranProduct.CAD,
     apiKey = "your-cad-api-key",
-    communityId = "your-community-id",
     apiUrl = "https://api.sonorancad.com",
     defaultServerId = 1,
     timeout = TimeSpan.FromSeconds(30)

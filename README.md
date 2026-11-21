@@ -19,7 +19,6 @@ using var sonoran = new SonoranClient(new SonoranClientOptions
 {
     product = SonoranProduct.CAD,
     apiKey = "your-api-key",
-    communityId = "your-community-id",
     defaultServerId = 1
 });
 ```
@@ -33,7 +32,6 @@ var options = new SonoranClientOptions
 {
     product = SonoranProduct.CAD,
     apiKey = "your-api-key",
-    communityId = "your-community-id",
     apiUrl = "https://api.sonorancad.com",
     defaultServerId = 1,
     timeout = TimeSpan.FromSeconds(30),
@@ -66,7 +64,7 @@ client.setRoomId(1);
 | --- | --- |
 | `product` | API product to use: `CAD`, `CMS`, or `RADIO`. |
 | `apiKey` | API key used for authenticated requests. |
-| `communityId` | Community identifier for your integration. Required for Radio v2 helpers unless supplied on an individual radio request. |
+| `communityId` | Optional default for public CAD `getLoginPageV2()` lookups. Radio v2 helpers require a community ID in the client options or on the request. |
 | `roomId` | Default Radio room ID for room-scoped Radio v2 helpers and request bodies. |
 | `apiUrl` | Optional API base URL override. |
 | `defaultServerId` | Default numeric server ID for CAD/CMS helpers that use server-scoped routes. Radio v2 helpers resolve the community route from `communityId`. |

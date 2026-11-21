@@ -913,7 +913,6 @@ public sealed class SonoranClientRequestMappingTests
         {
             product = SonoranProduct.CAD,
             apiKey = "test-key",
-            communityId = "community-123",
             apiUrl = "https://api.sonorancad.com/",
             defaultServerId = 3,
             timeout = TimeSpan.FromMilliseconds(12345),
